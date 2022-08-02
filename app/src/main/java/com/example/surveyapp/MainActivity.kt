@@ -3,33 +3,26 @@ package com.example.surveyapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.surveyapp.presentation.AuthScreen
-import com.example.surveyapp.presentation.AuthView
-import com.example.surveyapp.presentation.AuthViewModel
-import com.example.surveyapp.presentation.HomeScreen
+import androidx.navigation.compose.rememberNavController
+import com.example.surveyapp.presentation.login.LoginScreen
 import com.example.surveyapp.ui.theme.SurveyAppTheme
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalFoundationApi
-@ExperimentalAnimationApi
-@ExperimentalMaterialApi
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()
+
             SurveyAppTheme {
-                AuthScreen(authViewModel = authViewModel)
+                LoginScreen(navController = navController)
             }
         }
     }
