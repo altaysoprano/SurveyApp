@@ -69,9 +69,6 @@ class LoginViewModel @Inject constructor(private val firebaseAuthUseCase: Fireba
             AuthenticationResource.AUTHENTICATED -> {
                 isSignedIn.value = true
                 Log.d("Mesaj: ", "autenticated and issigned value = ${isSignedIn.value}")
-/*
-            navController.navigate(context.getString(R.string.main_screen))
-*/
             }
 
             AuthenticationResource.UNAUTHENTICATED -> {

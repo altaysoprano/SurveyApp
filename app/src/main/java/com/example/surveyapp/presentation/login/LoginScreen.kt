@@ -49,6 +49,16 @@ fun LoginScreen(navController: NavController) {
             }
         }
 
+    LaunchedEffect(key1 = isSignedIn.value) {
+        if(isSignedIn.value) {
+            navController.navigate(context.getString(R.string.main_screen)) {
+                popUpTo(context.getString(R.string.login_screen)) {
+                    inclusive = true
+                }
+            }
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -69,10 +79,6 @@ fun LoginScreen(navController: NavController) {
 
             }
         }
-    }
-
-    if(isSignedIn.value) {
-        navController.navigate(context.getString(R.string.main_screen))
     }
 
 /*

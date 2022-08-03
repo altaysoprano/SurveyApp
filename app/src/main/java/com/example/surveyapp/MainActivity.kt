@@ -3,6 +3,7 @@ package com.example.surveyapp
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -36,13 +37,13 @@ fun Navigation(){
     val context= LocalContext.current
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = context.getString(R.string.login_screen)){
+    NavHost(navController = navController, startDestination = context.getString(R.string.main_screen)){
         composable(context.getString(R.string.login_screen)) {
             LoginScreen(navController = navController)
             Log.d("Mesaj: ", "Logine geçti")
         }
         composable(context.getString(R.string.main_screen)){
-            MainScreen()
+            MainScreen(navController = navController)
             Log.d("Mesaj: ", "Home'a geçti")
         }
     }
