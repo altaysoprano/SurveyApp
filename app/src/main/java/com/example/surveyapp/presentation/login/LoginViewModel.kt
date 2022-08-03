@@ -33,18 +33,13 @@ class LoginViewModel @Inject constructor(private val firebaseAuthUseCase: Fireba
     private val _isSignedIn = mutableStateOf(false)
     val isSignedIn = _isSignedIn
 
-    private var auth: FirebaseAuth
+    private lateinit var auth: FirebaseAuth
 
     var authState = mutableStateOf<FirebaseAuthenticationResult<AuthenticationResource>?>(null)
         private set
 
     init {
-        auth = Firebase.auth
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            Log.d("Mesaj: ", "current user dolu")
-            isSignedIn.value = true
-        }
+        checkSignedIn()
     }
 
 
@@ -55,6 +50,16 @@ class LoginViewModel @Inject constructor(private val firebaseAuthUseCase: Fireba
                 authState.value = it
 
             }
+            checkLoginState()
+        }
+    }
+
+    fun checkSignedIn() {
+        auth = Firebase.auth
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            Log.d("Mesaj: ", "current user dolu")
+            isSignedIn.value = true
         }
     }
 
