@@ -9,10 +9,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -30,11 +27,15 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 
+@ExperimentalMaterialApi
 @Composable
 fun LoginScreen(navController: NavController) {
     val context = LocalContext.current
     val viewModel = hiltViewModel<LoginViewModel>()
-    val isSignedIn = viewModel.isSignedIn
+    val authState = viewModel.authenticationState
+
+    Log.d("Mesaj: ", "login screende isSignedIn : " + authState.value.isSignedIn.toString() + " ve "
+            + "login screen'de isLoading: " + authState.value.isLoading)
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
@@ -49,8 +50,8 @@ fun LoginScreen(navController: NavController) {
             }
         }
 
-    LaunchedEffect(key1 = isSignedIn.value) {
-        if(isSignedIn.value) {
+    LaunchedEffect(key1 = authState.value.isSignedIn) {
+        if(authState.value.isSignedIn) {
             navController.navigate(context.getString(R.string.main_screen)) {
                 popUpTo(context.getString(R.string.login_screen)) {
                     inclusive = true
@@ -71,6 +72,15 @@ fun LoginScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
+            GoogleSignInButton(
+                text = "Sign In with Google",
+                loadingText = "Signing In...",
+                isLoading = authState.value.isLoading
+            ) {
+                googleLogin(context, launcher)
+            }
+
+/*
             Button(onClick = {
                 googleLogin(context, launcher)
             }) {
@@ -78,6 +88,7 @@ fun LoginScreen(navController: NavController) {
                 Text(text = "Google")
 
             }
+*/
         }
     }
 

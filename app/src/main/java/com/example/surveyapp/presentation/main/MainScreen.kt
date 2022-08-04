@@ -23,10 +23,10 @@ fun MainScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
-    val isSignedIn = viewModel.isSignedIn
+    val authState = viewModel.authenticationState
 
-    LaunchedEffect(key1 = isSignedIn.value) {
-        if(!isSignedIn.value) {
+    LaunchedEffect(key1 = authState.value.isSignedIn) {
+        if(!authState.value.isSignedIn) {
             navController.navigate(context.getString(R.string.login_screen)) {
                 popUpTo(context.getString(R.string.main_screen)) {
                     inclusive = true

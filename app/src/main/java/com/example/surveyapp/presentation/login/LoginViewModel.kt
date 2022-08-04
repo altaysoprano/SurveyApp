@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,8 +31,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(private val firebaseAuthUseCase: FirebaseAuthUseCase) :
     ViewModel() {
 
-    private val _isSignedIn = mutableStateOf(false)
-    val isSignedIn = _isSignedIn
+    private val _authenticationState = mutableStateOf(AuthState())
+    val authenticationState = _authenticationState
 
     private lateinit var auth: FirebaseAuth
 
@@ -42,15 +43,33 @@ class LoginViewModel @Inject constructor(private val firebaseAuthUseCase: Fireba
         checkSignedIn()
     }
 
-
     fun loginWithCredential(authCredential: AuthCredential) {
         viewModelScope.launch {
             firebaseAuthUseCase.invoke(authCredential).collect {
 
-                authState.value = it
+                when (it.authenticationState) {
+                    AuthenticationResource.AUTHENTICATED -> {
+                        _authenticationState.value = _authenticationState.value.copy(
+                            isSignedIn = true,
+                            isLoading = false
+                        )
+                    }
 
+                    AuthenticationResource.UNAUTHENTICATED -> {
+                        _authenticationState.value = _authenticationState.value.copy(
+                            isSignedIn = false,
+                            isLoading = false
+                        )
+                        println(authState.value?.firebaseException?.localizedMessage)
+                    }
+
+                    AuthenticationResource.IN_PROGRESS -> {
+                        _authenticationState.value = _authenticationState.value.copy(
+                            isLoading = true
+                        )
+                    }
+                }
             }
-            checkLoginState()
         }
     }
 
@@ -59,27 +78,10 @@ class LoginViewModel @Inject constructor(private val firebaseAuthUseCase: Fireba
         val currentUser = auth.currentUser
         if (currentUser != null) {
             Log.d("Mesaj: ", "current user dolu")
-            isSignedIn.value = true
-        }
-    }
-
-    fun checkLoginState() {
-
-        when (authState.value?.authenticationState) {
-            AuthenticationResource.AUTHENTICATED -> {
-                isSignedIn.value = true
-                Log.d("Mesaj: ", "autenticated and issigned value = ${isSignedIn.value}")
-            }
-
-            AuthenticationResource.UNAUTHENTICATED -> {
-                isSignedIn.value = false
-                println(authState.value?.firebaseException?.localizedMessage)
-            }
-
-            AuthenticationResource.IN_PROGRESS -> {
-                isSignedIn.value = false
-                Log.d("Mesaj: ", "in progress")
-            }
+            _authenticationState.value = _authenticationState.value.copy(
+                isSignedIn = true,
+                isLoading = false
+            )
         }
     }
 }
