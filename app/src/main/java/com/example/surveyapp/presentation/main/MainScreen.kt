@@ -4,8 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -26,7 +30,7 @@ fun MainScreen(
     val authState = viewModel.authenticationState
 
     LaunchedEffect(key1 = authState.value.isSignedIn) {
-        if(!authState.value.isSignedIn) {
+        if (!authState.value.isSignedIn) {
             navController.navigate(context.getString(R.string.login_screen)) {
                 popUpTo(context.getString(R.string.main_screen)) {
                     inclusive = true
@@ -38,7 +42,21 @@ fun MainScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(Color.White),
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = {
+                    navController.navigate(context.getString(R.string.create_poll_screen))
+                },
+                icon = {
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = "Create A Poll"
+                    )
+                },
+                text = { Text("Create A Poll") }
+            )
+        }
     ) {
 
         Column(
@@ -47,7 +65,7 @@ fun MainScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Text(text = "Şıhım hoşgelmişsen")
+            Text(text = "Main Screen")
 
         }
     }

@@ -34,9 +34,6 @@ fun LoginScreen(navController: NavController) {
     val viewModel = hiltViewModel<LoginViewModel>()
     val authState = viewModel.authenticationState
 
-    Log.d("Mesaj: ", "login screende isSignedIn : " + authState.value.isSignedIn.toString() + " ve "
-            + "login screen'de isLoading: " + authState.value.isLoading)
-
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
@@ -79,23 +76,8 @@ fun LoginScreen(navController: NavController) {
             ) {
                 googleLogin(context, launcher)
             }
-
-/*
-            Button(onClick = {
-                googleLogin(context, launcher)
-            }) {
-
-                Text(text = "Google")
-
-            }
-*/
         }
     }
-
-/*
-    CheckLoginState(viewModel = viewModel, navController = navController, context = context )
-*/
-
 }
 
 private fun googleLogin(
@@ -116,41 +98,3 @@ private fun googleLogin(
     launcher.launch(signInIntent)
 
 }
-
-
-/*
-@Composable
-fun CheckLoginState(viewModel: LoginViewModel,navController: NavController,context: Context, isSignedIn: Boolean) {
-    val loginState = viewModel.authState
-    val isSignedIn = viewModel.isSignedIn
-
-    when (loginState.value?.authenticationState) {
-        AuthenticationResource.AUTHENTICATED -> {
-            isSignedIn.value = true
-*/
-/*
-            navController.navigate(context.getString(R.string.main_screen))
-*//*
-
-        }
-
-        AuthenticationResource.UNAUTHENTICATED -> {
-            isSignedIn.value = false
-            println(loginState.value?.firebaseException?.localizedMessage)
-        }
-
-        AuthenticationResource.IN_PROGRESS -> {
-            isSignedIn.value = false
-            Box(
-                contentAlignment = Alignment.Center, modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Color.White
-                    )
-            ) {
-                CircularProgressIndicator()
-            }
-        }
-    }
-}
-*/

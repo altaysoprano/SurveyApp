@@ -1,4 +1,4 @@
-package com.example.surveyapp.domain
+package com.example.surveyapp.domain.usecase
 
 import com.example.surveyapp.common.AuthenticationResource
 import com.example.surveyapp.common.FirebaseAuthenticationResult

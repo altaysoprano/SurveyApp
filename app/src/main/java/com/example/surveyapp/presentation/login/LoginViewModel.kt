@@ -1,24 +1,12 @@
 package com.example.surveyapp.presentation.login
 
-import android.content.Context
-import android.util.Log
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import com.example.surveyapp.R
 import com.example.surveyapp.common.AuthenticationResource
 import com.example.surveyapp.common.FirebaseAuthenticationResult
-import com.example.surveyapp.domain.FirebaseAuthUseCase
+import com.example.surveyapp.domain.usecase.FirebaseAuthUseCase
+import com.example.surveyapp.domain.usecase.UseCases
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -28,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val firebaseAuthUseCase: FirebaseAuthUseCase) :
+class LoginViewModel @Inject constructor(private val useCases: UseCases) :
     ViewModel() {
 
     private val _authenticationState = mutableStateOf(AuthState())
@@ -45,7 +33,7 @@ class LoginViewModel @Inject constructor(private val firebaseAuthUseCase: Fireba
 
     fun loginWithCredential(authCredential: AuthCredential) {
         viewModelScope.launch {
-            firebaseAuthUseCase.invoke(authCredential).collect {
+            useCases.firebaseAuthUseCase.invoke(authCredential).collect {
 
                 when (it.authenticationState) {
                     AuthenticationResource.AUTHENTICATED -> {
@@ -77,7 +65,6 @@ class LoginViewModel @Inject constructor(private val firebaseAuthUseCase: Fireba
         auth = Firebase.auth
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            Log.d("Mesaj: ", "current user dolu")
             _authenticationState.value = _authenticationState.value.copy(
                 isSignedIn = true,
                 isLoading = false

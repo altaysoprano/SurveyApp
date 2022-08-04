@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.surveyapp.presentation.CreatePollScreen
 import com.example.surveyapp.presentation.login.LoginScreen
 import com.example.surveyapp.presentation.main.MainScreen
 import com.example.surveyapp.ui.theme.SurveyAppTheme
@@ -42,11 +43,12 @@ fun Navigation(){
     NavHost(navController = navController, startDestination = context.getString(R.string.main_screen)){
         composable(context.getString(R.string.login_screen)) {
             LoginScreen(navController = navController)
-            Log.d("Mesaj: ", "Logine geçti")
         }
         composable(context.getString(R.string.main_screen)){
             MainScreen(navController = navController)
-            Log.d("Mesaj: ", "Home'a geçti")
+        }
+        composable(context.getString(R.string.create_poll_screen)){
+            CreatePollScreen()
         }
     }
 }
