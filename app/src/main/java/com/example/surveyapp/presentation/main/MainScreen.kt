@@ -1,5 +1,7 @@
 package com.example.surveyapp.presentation.main
 
+import android.util.Log
+import android.widget.ProgressBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,15 +21,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.surveyapp.R
+import com.example.surveyapp.common.Response
 import com.example.surveyapp.presentation.login.LoginViewModel
+import com.example.surveyapp.presentation.main.components.SurveysContent
 
 @Composable
 fun MainScreen(
-    viewModel: LoginViewModel = hiltViewModel(),
+    loginViewModel: LoginViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController
 ) {
     val context = LocalContext.current
-    val authState = viewModel.authenticationState
+    val authState = loginViewModel.authenticationState
 
     LaunchedEffect(key1 = authState.value.isSignedIn) {
         if (!authState.value.isSignedIn) {
@@ -56,17 +61,19 @@ fun MainScreen(
                 },
                 text = { Text("Create A Poll") }
             )
-        }
-    ) {
+        },
+        content = { padding ->
+            when(val surveysReference = homeViewModel.surveysReference) {
+                is Response.Loading -> Log.d("Mesaj: ", "Yükleniyor")
+                is Response.Success -> {
+                    SurveysContent(
+                        padding = padding,
+                        surveys = surveysReference.data,
+                    )
+                }
+                is Error -> Log.d("Mesaj: ", surveysReference.message.toString())
+            }
+        },
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Text(text = "Main Screen")
-
-        }
-    }
+        )
 }
