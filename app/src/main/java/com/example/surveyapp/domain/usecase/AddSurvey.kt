@@ -3,8 +3,12 @@ package com.example.surveyapp.domain.usecase
 import com.example.surveyapp.data.repository.FirebaseRepository
 import javax.inject.Inject
 
-class GetSurveys(
+class AddSurvey(
     private val repo: FirebaseRepository
 ) {
-    operator fun invoke() = repo.getBooksFromFirestore()
+
+    suspend operator fun invoke(
+        title: String,
+        description: String
+    ) = repo.addBookToFirestore(title, description)
 }

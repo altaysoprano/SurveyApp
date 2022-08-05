@@ -4,5 +4,6 @@ import javax.inject.Inject
 
 data class UseCases @Inject constructor(
     val firebaseAuthUseCase: FirebaseAuthUseCase,
-    val getSurveys: GetSurveys
+    val getSurveys: GetSurveys,
+    val addSurvey: AddSurvey
 )

@@ -3,6 +3,7 @@ package com.example.surveyapp.di
 import com.example.surveyapp.common.Constants.SURVEYS
 import com.example.surveyapp.data.firebase.FirebaseAuthLoginSourceProvider
 import com.example.surveyapp.data.repository.FirebaseRepository
+import com.example.surveyapp.domain.usecase.AddSurvey
 import com.example.surveyapp.domain.usecase.FirebaseAuthUseCase
 import com.example.surveyapp.domain.usecase.GetSurveys
 import com.example.surveyapp.domain.usecase.UseCases
@@ -29,5 +30,22 @@ object AppModule {
     fun provideSurveysRef(
         db: FirebaseFirestore
     ) = db.collection(SURVEYS)
+
+    @Provides
+    @Singleton
+    fun provideBooksRepository(
+        surveysRef: CollectionReference
+    ): FirebaseRepository = FirebaseRepository(FirebaseAuthLoginSourceProvider(), surveysRef)
+
+    @Provides
+    @Singleton
+    fun provideUseCases(
+        repo: FirebaseRepository
+    ) = UseCases(
+        getSurveys = GetSurveys(repo),
+        addSurvey = AddSurvey(repo),
+        firebaseAuthUseCase = FirebaseAuthUseCase(repo)
+    )
+
 
 }

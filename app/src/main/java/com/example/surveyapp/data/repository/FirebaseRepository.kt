@@ -8,15 +8,17 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.firestore.CollectionReference
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FirebaseRepository @Inject constructor(
+class FirebaseRepository(
     private val firebaseSocialLoginSourceProvider: FirebaseAuthLoginSourceProvider,
-    private val booksRef: CollectionReference
+    private val surveysRef: CollectionReference
 ) {
 
     fun getBooksFromFirestore() = callbackFlow {
-        val snapshotListener = booksRef.orderBy(TITLE).addSnapshotListener { snapshot, e ->
+        val snapshotListener = surveysRef.orderBy(TITLE).addSnapshotListener { snapshot, e ->
             val response = if (snapshot != null) {
                 val surveys = snapshot.toObjects(Survey::class.java)
                 Response.Success(surveys)
@@ -30,6 +32,21 @@ class FirebaseRepository @Inject constructor(
         }
     }
 
+    suspend fun addBookToFirestore(title: String, description: String) = flow {
+        try {
+            emit(Response.Loading)
+            val id = surveysRef.document().id
+            val book = Survey(
+                id = id,
+                title = title,
+                description = description
+            )
+            val addition = surveysRef.document(id).set(book).await()
+            emit(Response.Success(addition))
+        } catch (e: Exception) {
+            emit(Error(e.message ?: e.toString()))
+        }
+    }
 
     suspend fun loginWithCredential(authCredential: AuthCredential) =
         firebaseSocialLoginSourceProvider.loginWithCredential(authCredential)
