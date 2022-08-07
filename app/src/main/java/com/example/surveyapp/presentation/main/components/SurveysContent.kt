@@ -20,7 +20,7 @@ fun SurveysContent(
         items(
             items = surveys
         ) { survey ->
-            BookCard(
+            SurveyCard(
                 survey = survey,
             )
         }

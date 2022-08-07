@@ -1,15 +1,9 @@
 package com.example.surveyapp.presentation.main
 
 import android.util.Log
-import android.widget.ProgressBar
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
@@ -18,11 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.surveyapp.R
 import com.example.surveyapp.common.Response
 import com.example.surveyapp.presentation.login.LoginViewModel
+import com.example.surveyapp.presentation.main.components.SearchSurveyButton
+import com.example.surveyapp.presentation.main.components.SearchSurvey
 import com.example.surveyapp.presentation.main.components.SurveysContent
 
 @Composable
@@ -33,6 +30,7 @@ fun MainScreen(
 ) {
     val context = LocalContext.current
     val authState = loginViewModel.authenticationState
+    val searchSurveyState = homeViewModel.searchSurveyState
 
     LaunchedEffect(key1 = authState.value.isSignedIn) {
         if (!authState.value.isSignedIn) {
@@ -61,9 +59,34 @@ fun MainScreen(
                 },
                 text = { Text("Create A Poll") }
             )
-        },
-        content = { padding ->
-            when(val surveysReference = homeViewModel.surveysReference) {
+        })
+    {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            SearchSurvey()
+            Spacer(modifier = Modifier.height(16.dp))
+            if (searchSurveyState.value.isLoading) {
+                CircularProgressIndicator()
+            }
+            if (searchSurveyState.value.data != null) {
+                val survey = searchSurveyState.value.data
+                Log.d("Mesaj: ", "document var ${survey?.title}")
+            }
+            if (searchSurveyState.value.error.isNotBlank()) {
+                Log.d("Mesaj: ", searchSurveyState.value.error)
+            }
+        }
+    }
+}
+
+    //AŞAĞIDAKİLERİ DAHA SONRA UYGUN YERLERE KOY
+    /*
+            when (val surveysReference = homeViewModel.surveysReference) {
                 is Response.Loading -> Log.d("Mesaj: ", "Yükleniyor")
                 is Response.Success -> {
                     SurveysContent(
@@ -73,7 +96,13 @@ fun MainScreen(
                 }
                 is Error -> Log.d("Mesaj: ", surveysReference.message.toString())
             }
-        },
+*/
 
-        )
-}
+/*
+    when(val addSurveyResponse = homeViewModel.getSurveyResponse) {
+        is Response.Loading -> Log.d("Mesaj: ", "Ekleniyor")
+        is Response.Success -> Unit
+        is Error -> Log.d("Mesaj: ", addSurveyResponse.message.toString())
+    }
+*/
+

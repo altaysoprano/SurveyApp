@@ -3,10 +3,7 @@ package com.example.surveyapp.di
 import com.example.surveyapp.common.Constants.SURVEYS
 import com.example.surveyapp.data.firebase.FirebaseAuthLoginSourceProvider
 import com.example.surveyapp.data.repository.FirebaseRepository
-import com.example.surveyapp.domain.usecase.AddSurvey
-import com.example.surveyapp.domain.usecase.FirebaseAuthUseCase
-import com.example.surveyapp.domain.usecase.GetSurveys
-import com.example.surveyapp.domain.usecase.UseCases
+import com.example.surveyapp.domain.usecase.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -44,7 +41,8 @@ object AppModule {
     ) = UseCases(
         getSurveys = GetSurveys(repo),
         addSurvey = AddSurvey(repo),
-        firebaseAuthUseCase = FirebaseAuthUseCase(repo)
+        firebaseAuthUseCase = FirebaseAuthUseCase(repo),
+        getSurveyById = GetSurveyById(repo)
     )
 
 

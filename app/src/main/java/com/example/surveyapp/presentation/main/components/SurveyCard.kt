@@ -1,5 +1,6 @@
 package com.example.surveyapp.presentation.main.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.example.surveyapp.data.models.Survey
 
 @Composable
-fun BookCard(
+fun SurveyCard(
     survey: Survey,
 ) {
     Card(
@@ -58,6 +59,7 @@ fun BookCard(
                         textDecoration = TextDecoration.Underline
                     )
                 }
+                Log.d("Mesaj: ", "Anketin id'si: ${survey.id}")
             }
         }
     }
