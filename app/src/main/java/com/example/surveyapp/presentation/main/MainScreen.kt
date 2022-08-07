@@ -31,6 +31,7 @@ fun MainScreen(
     val context = LocalContext.current
     val authState = loginViewModel.authenticationState
     val searchSurveyState = homeViewModel.searchSurveyState
+    val isIdBlank = homeViewModel.isIdBlank
 
     LaunchedEffect(key1 = authState.value.isSignedIn) {
         if (!authState.value.isSignedIn) {
@@ -69,16 +70,22 @@ fun MainScreen(
             verticalArrangement = Arrangement.Center
         ) {
             SearchSurvey()
-            Spacer(modifier = Modifier.height(16.dp))
-            if (searchSurveyState.value.isLoading) {
-                CircularProgressIndicator()
+            if(isIdBlank.value) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text("Please enter a code", color = MaterialTheme.colors.error)
             }
+            Spacer(modifier = Modifier.height(16.dp))
             if (searchSurveyState.value.data != null) {
                 val survey = searchSurveyState.value.data
                 Log.d("Mesaj: ", "document var ${survey?.title}")
             }
             if (searchSurveyState.value.error.isNotBlank()) {
                 Log.d("Mesaj: ", searchSurveyState.value.error)
+            }
+        }
+        if (searchSurveyState.value.isLoading) {
+            Box(modifier = Modifier.fillMaxSize().padding(top = 192.dp), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
         }
     }
