@@ -31,7 +31,6 @@ fun MainScreen(
     val context = LocalContext.current
     val authState = loginViewModel.authenticationState
     val searchSurveyState = homeViewModel.searchSurveyState
-    val isIdBlank = homeViewModel.isIdBlank
 
     LaunchedEffect(key1 = authState.value.isSignedIn) {
         if (!authState.value.isSignedIn) {
@@ -70,7 +69,7 @@ fun MainScreen(
             verticalArrangement = Arrangement.Center
         ) {
             SearchSurvey()
-            if(isIdBlank.value) {
+            if(searchSurveyState.value.isTextBlank) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text("Please enter a code", color = MaterialTheme.colors.error)
             }
