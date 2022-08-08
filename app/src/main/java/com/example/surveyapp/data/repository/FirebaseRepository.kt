@@ -22,7 +22,7 @@ class FirebaseRepository(
         val snapshotListener = surveysRef.orderBy(TITLE).addSnapshotListener { snapshot, e ->
             val response = if (snapshot != null) {
                 val surveys = snapshot.toObjects(Survey::class.java)
-                Response.Success(surveys)
+                Response.Success(surveys) //Burada try-send yapman gerekiyor olabilir
             } else {
                 Error(e?.message ?: e.toString())
             }
@@ -45,7 +45,7 @@ class FirebaseRepository(
             val addition = surveysRef.document(id).set(survey).await()
             emit(Response.Success(addition))
         } catch (e: Exception) {
-            emit(Error(e.message ?: e.toString()))
+            emit(Response.Error(e.message ?: e.toString()))
         }
     }
 
@@ -55,49 +55,22 @@ class FirebaseRepository(
         try {
             surveysRef.document(id).get()
                 .addOnSuccessListener { document ->
-                    if(document != null) {
+                    if(document.exists()) {
                         val survey = document.toObject(Survey::class.java)
                         trySend(Response.Success(survey))
                     }
                     else {
-                        trySend(Response.Error("Document couldn't found"))
+                        trySend(Response.Error("Survey not found"))
                     }
                 }
                 .addOnFailureListener {
-                    trySend(Response.Error("Document couldn't fetch"))
+                    trySend(Response.Error("A problem has occured, please try again"))
                 }
         } catch(e: Exception) {
             trySend(Response.Error(e.message.toString()))
         }
 
         awaitClose {cancel()}
-
-/*
-        try {
-            Response.Loading
-            Log.d("Mesaj: ", "document yükleniyo")
-            surveysRef.document(id).get()
-                .addOnSuccessListener { document ->
-                    val response = if (document != null) {
-                        val survey = document.toObject(Survey::class.java)
-                        Response.Success(survey)
-                    } else {
-                        Response.Error("document bulunamadı")
-                    }
-                    trySend(response).isSuccess
-                }
-                .addOnFailureListener {
-                    Response.Error("failed")
-                    Log.d("Mesaj: ", "failed")
-                }
-        } catch (e: Exception) {
-            Error(e.message ?: e.toString())
-            Log.d("Mesaj: ", e.message.toString())
-        }
-        awaitClose {
-
-        }
-*/
     }
 
     suspend fun loginWithCredential(authCredential: AuthCredential) =

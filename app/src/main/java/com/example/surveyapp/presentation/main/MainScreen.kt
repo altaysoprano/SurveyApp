@@ -16,11 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.surveyapp.R
-import com.example.surveyapp.common.Response
 import com.example.surveyapp.presentation.login.LoginViewModel
-import com.example.surveyapp.presentation.main.components.SearchSurveyButton
 import com.example.surveyapp.presentation.main.components.SearchSurvey
-import com.example.surveyapp.presentation.main.components.SurveysContent
 
 @Composable
 fun MainScreen(
@@ -73,13 +70,14 @@ fun MainScreen(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text("Please enter a code", color = MaterialTheme.colors.error)
             }
+            if (searchSurveyState.value.error.isNotBlank()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(searchSurveyState.value.error, color = MaterialTheme.colors.error)
+            }
             Spacer(modifier = Modifier.height(16.dp))
             if (searchSurveyState.value.data != null) {
                 val survey = searchSurveyState.value.data
                 Log.d("Mesaj: ", "document var ${survey?.title}")
-            }
-            if (searchSurveyState.value.error.isNotBlank()) {
-                Log.d("Mesaj: ", searchSurveyState.value.error)
             }
         }
         if (searchSurveyState.value.isLoading) {
