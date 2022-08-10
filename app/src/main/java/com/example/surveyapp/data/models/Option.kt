@@ -2,5 +2,6 @@ package com.example.surveyapp.data.models
 
 data class Option(
     val name: String = "",
-    val numberOfVotes: Int = 0
+    val numberOfVotes: Int = 0,
+    val isNewOption: Boolean = false
 )
