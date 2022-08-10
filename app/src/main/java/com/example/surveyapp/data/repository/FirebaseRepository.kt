@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.surveyapp.common.Constants.TITLE
 import com.example.surveyapp.common.Response
 import com.example.surveyapp.data.firebase.FirebaseAuthLoginSourceProvider
+import com.example.surveyapp.data.models.Option
 import com.example.surveyapp.data.models.Survey
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.firestore.CollectionReference
@@ -33,14 +34,14 @@ class FirebaseRepository(
         }
     }
 
-    suspend fun addSurveyToFirestore(title: String, description: String) = flow {
+    suspend fun addSurveyToFirestore(title: String, options: List<Option>) = flow {
         try {
             emit(Response.Loading)
             val id = surveysRef.document().id
             val survey = Survey(
                 id = id,
                 title = title,
-                description = description
+                options = options
             )
             val addition = surveysRef.document(id).set(survey).await()
             emit(Response.Success(addition))

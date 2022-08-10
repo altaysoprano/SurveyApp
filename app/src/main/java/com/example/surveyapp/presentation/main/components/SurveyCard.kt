@@ -50,14 +50,6 @@ fun SurveyCard(
                         fontSize = 25.sp
                     )
                 }
-                survey.description?.let { description ->
-                    Text(
-                        text = description,
-                        color = Color.DarkGray,
-                        fontSize = 12.sp,
-                        textDecoration = TextDecoration.Underline
-                    )
-                }
                 Log.d("Mesaj: ", "Anketin id'si: ${survey.id}")
             }
         }
