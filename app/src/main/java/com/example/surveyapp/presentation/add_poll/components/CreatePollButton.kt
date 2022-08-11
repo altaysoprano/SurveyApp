@@ -2,6 +2,7 @@ package com.example.surveyapp.presentation.add_poll.components
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -13,13 +14,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CreatePollButton(
+    modifier: Modifier,
     isButtonEnabled: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+        modifier = modifier,
         onClick = {
             onClick()
         },
