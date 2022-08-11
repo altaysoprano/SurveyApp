@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -60,12 +59,6 @@ fun CreatePollScreen(
                     } else {}
                 }
             )
-            //TITLE BLANK KISMI
-            if (createPollState.value.isTitleBlank) {
-                Log.d("Mesaj: ", "title blank")
-                Spacer(modifier = Modifier.height(4.dp))
-                Text("Title field cannot be left blank", color = MaterialTheme.colors.error)
-            }
             Spacer(modifier = Modifier.height(24.dp))
             Column(
                 modifier = Modifier.fillMaxHeight(0.8f)
@@ -128,7 +121,7 @@ fun CreatePollScreen(
                 Text("An error has occured. Please try again.", color = MaterialTheme.colors.error)
             }
             Spacer(modifier = Modifier.height(8.dp))
-            CreatePollButton {
+            CreatePollButton(isButtonEnabled = createPollState.value.title.isNotBlank() && createPollState.value.options.all { it.name.isNotBlank()}) {
                 // viewModel.addSurvey(createPollState.value.title, createPollState.value.description)
             }
         }
