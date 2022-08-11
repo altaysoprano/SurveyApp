@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,8 +49,18 @@ fun CreatePollScreen(
                 label = { Text(text = "Ask something...") },
                 onValueChange = {
                     viewModel.onTitleChanged(it)
+                },
+                trailingIcon = {
+                    if (createPollState.value.title.isNotBlank()) {
+                        Icon(
+                            Icons.Default.Clear,
+                            contentDescription = "Clear Text",
+                            modifier = Modifier.clickable { viewModel.onTitleChanged("") }
+                        )
+                    } else {}
                 }
             )
+            //TITLE BLANK KISMI
             if (createPollState.value.isTitleBlank) {
                 Log.d("Mesaj: ", "title blank")
                 Spacer(modifier = Modifier.height(4.dp))
@@ -78,7 +89,17 @@ fun CreatePollScreen(
                                 onValueChange = {
                                     viewModel.onOptionChanged(it, index)
                                 },
-                                singleLine = true
+                                singleLine = true,
+                                trailingIcon = {
+                                    if (createPollState.value.options[index].name.isNotBlank()) {
+                                        Icon(
+                                            Icons.Default.Clear,
+                                            contentDescription = "Clear Text",
+                                            modifier = Modifier.clickable { viewModel.onOptionChanged("", index) }
+                                        )
+                                    } else {
+                                    }
+                                }
                             )
                             if (option.isNewOption) {
                                 Icon(
