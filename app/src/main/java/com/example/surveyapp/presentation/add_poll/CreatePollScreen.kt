@@ -116,8 +116,12 @@ fun CreatePollScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                         }
                         stickyHeader {
-                            AddOptionButton {
-                                viewModel.addOption()
+                            if(createPollState.value.options.size < 10) {
+                                AddOptionButton {
+                                    viewModel.addOption()
+                                }
+                            } else {
+                                Text("You can add up to 10 options.", color = MaterialTheme.colors.error)
                             }
                             Spacer(modifier = Modifier.height(8.dp))
                         }
