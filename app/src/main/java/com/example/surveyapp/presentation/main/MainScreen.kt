@@ -41,7 +41,6 @@ fun MainScreen(
 
     LaunchedEffect(key1 = searchSurveyState.value.data ) {
         var survey = searchSurveyState.value.data
-        Log.d("Mesaj: ", survey.toString())
         if (survey != null) {
             navController.navigate(context.getString(R.string.poll_detail_screen))
             homeViewModel.onNavigatedToPollDetail()
