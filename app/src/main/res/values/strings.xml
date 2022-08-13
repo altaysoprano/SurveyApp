@@ -2,6 +2,7 @@
     <string name="app_name">SurveyApp</string>
     <string name="login_screen">login_screen</string>
     <string name="home_screen">home_screen</string>
+    <string name="poll_detail_screen">poll_detail_screen</string>
     <string name="welcome">Hoşgeldiniz!</string>
     <string name="main_screen">main_screen</string>
     <string name="create_poll_screen">create_poll_screen</string>

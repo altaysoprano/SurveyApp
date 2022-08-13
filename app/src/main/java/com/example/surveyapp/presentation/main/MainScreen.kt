@@ -39,6 +39,15 @@ fun MainScreen(
         }
     }
 
+    LaunchedEffect(key1 = searchSurveyState.value.data ) {
+        var survey = searchSurveyState.value.data
+        Log.d("Mesaj: ", survey.toString())
+        if (survey != null) {
+            navController.navigate(context.getString(R.string.poll_detail_screen))
+            homeViewModel.onNavigatedToPollDetail()
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -65,7 +74,7 @@ fun MainScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            SearchSurvey()
+            SearchSurvey(navController = navController, context = context)
             if(searchSurveyState.value.isTextBlank) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text("Please enter a code", color = MaterialTheme.colors.error)
@@ -75,13 +84,11 @@ fun MainScreen(
                 Text(searchSurveyState.value.error, color = MaterialTheme.colors.error)
             }
             Spacer(modifier = Modifier.height(16.dp))
-            if (searchSurveyState.value.data != null) {
-                val survey = searchSurveyState.value.data
-                Log.d("Mesaj: ", "document var ${survey?.title}")
-            }
         }
         if (searchSurveyState.value.isLoading) {
-            Box(modifier = Modifier.fillMaxSize().padding(top = 192.dp), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 192.dp), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         }
@@ -101,12 +108,3 @@ fun MainScreen(
                 is Error -> Log.d("Mesaj: ", surveysReference.message.toString())
             }
 */
-
-/*
-    when(val addSurveyResponse = homeViewModel.getSurveyResponse) {
-        is Response.Loading -> Log.d("Mesaj: ", "Ekleniyor")
-        is Response.Success -> Unit
-        is Error -> Log.d("Mesaj: ", addSurveyResponse.message.toString())
-    }
-*/
-

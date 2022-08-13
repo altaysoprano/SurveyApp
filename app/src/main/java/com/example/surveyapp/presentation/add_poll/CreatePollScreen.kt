@@ -147,7 +147,7 @@ fun CreatePollScreen(
                     .padding(8.dp)
                     .align(Alignment.BottomCenter),
                 isButtonEnabled = createPollState.value.title.isNotBlank() && createPollState.value.options.all { it.name.isNotBlank() }) {
-                // viewModel.addSurvey(createPollState.value.title, createPollState.value.description)
+                viewModel.addSurvey(createPollState.value.title, createPollState.value.options)
             }
         }
     }
