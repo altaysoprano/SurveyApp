@@ -1,5 +1,6 @@
 package com.example.surveyapp.presentation.main
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -25,6 +26,19 @@ class HomeViewModel @Inject constructor(
 
     private val _searchSurveyState = mutableStateOf(SearchSurveyState())
     val searchSurveyState = _searchSurveyState
+
+/*
+    init {
+        Log.d("Mesaj: ", getRandomString())
+    }
+
+    fun getRandomString() : String {
+        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+        return (1..5)
+            .map { allowedChars.random() }
+            .joinToString("")
+    }
+*/
 
     private fun getSurveys() = viewModelScope.launch {
         useCases.getSurveys().collect { response ->
