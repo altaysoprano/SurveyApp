@@ -33,7 +33,7 @@ fun PollDetailScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Burası PollDetailScreen ${survey?.title}")
+            Text("${survey?.title}")
         }
     }
 }

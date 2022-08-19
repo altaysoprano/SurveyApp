@@ -90,7 +90,7 @@ fun MainScreen(
         if (searchSurveyState.value.isLoading) {
             Box(modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 192.dp), contentAlignment = Alignment.Center) {
+                .background(color = Color.LightGray.copy(alpha = 0.5f)), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         }

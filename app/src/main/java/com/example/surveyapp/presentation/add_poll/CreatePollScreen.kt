@@ -160,7 +160,8 @@ fun CreatePollScreen(
                 Spacer(modifier = Modifier.height(24.dp))
             }
             if (createPollState.value.isLoading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxSize().background(color = Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
             }
