@@ -7,9 +7,13 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.surveyapp.common.SurveyType
+import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.presentation.CreatePollScreen
 import com.example.surveyapp.presentation.login.LoginScreen
 import com.example.surveyapp.presentation.main.MainScreen
@@ -47,10 +51,18 @@ fun Navigation(){
             MainScreen(navController = navController)
         }
         composable(context.getString(R.string.create_poll_screen)){
-            CreatePollScreen()
+            CreatePollScreen(navController = navController)
         }
-        composable(context.getString(R.string.poll_detail_screen)) {
-            PollDetailScreen()
+        // NavHost(startDestination = "profile/{userId}") {
+        composable(
+            route = "${context.getString(R.string.poll_detail_screen)}/{survey}",
+            arguments = listOf(
+                navArgument("survey") {
+                    type = SurveyType()
+                }
+            )
+        ) { entry ->
+            PollDetailScreen(survey = entry.arguments?.getParcelable<Survey>("survey"))
         }
     }
 }

@@ -11,6 +11,7 @@ import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.domain.usecase.UseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,10 +34,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getRandomString() : String {
-        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-        return (1..5)
-            .map { allowedChars.random() }
-            .joinToString("")
+        return UUID.randomUUID().toString().substring(0,6)
     }
 */
 

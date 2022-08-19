@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 class PollDetailViewModel @Inject constructor(
 
-): ViewModel() {
+) : ViewModel() {
 
 
 }

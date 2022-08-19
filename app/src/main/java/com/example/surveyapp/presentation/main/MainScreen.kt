@@ -1,5 +1,6 @@
 package com.example.surveyapp.presentation.main
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,6 +19,7 @@ import androidx.navigation.NavController
 import com.example.surveyapp.R
 import com.example.surveyapp.presentation.login.LoginViewModel
 import com.example.surveyapp.presentation.main.components.SearchSurvey
+import com.google.gson.Gson
 
 @Composable
 fun MainScreen(
@@ -42,7 +44,8 @@ fun MainScreen(
     LaunchedEffect(key1 = searchSurveyState.value.data ) {
         var survey = searchSurveyState.value.data
         if (survey != null) {
-            navController.navigate(context.getString(R.string.poll_detail_screen))
+            val json = Uri.encode(Gson().toJson(survey))
+            navController.navigate("${context.getString(R.string.poll_detail_screen)}/$json")
             homeViewModel.onNavigatedToPollDetail()
         }
     }

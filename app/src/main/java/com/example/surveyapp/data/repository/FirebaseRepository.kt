@@ -37,21 +37,20 @@ class FirebaseRepository(
     suspend fun addSurveyToFirestore(title: String, options: List<Option>) = flow {
         try {
             emit(Response.Loading)
-            val id = surveysRef.document().id
+            val id = surveysRef.document().id.take(6)
             val survey = Survey(
                 id = id,
                 title = title,
                 options = options
             )
-            val addition = surveysRef.document(id).set(survey).await()
-            emit(Response.Success(addition))
+            surveysRef.document(id).set(survey).await()
+            emit(Response.Success(survey))
         } catch (e: Exception) {
             emit(Response.Error(e.message ?: e.toString()))
         }
     }
 
     fun getSurveyById(id: String) = callbackFlow {
-
         trySend(Response.Loading)
         try {
             surveysRef.document(id).get()

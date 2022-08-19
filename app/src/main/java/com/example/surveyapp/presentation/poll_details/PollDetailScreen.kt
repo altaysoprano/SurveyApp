@@ -13,9 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.surveyapp.data.models.Survey
 
 @Composable
-fun PollDetailScreen() {
+fun PollDetailScreen(
+    survey: Survey?
+) {
 
     Scaffold(
         modifier = Modifier
@@ -30,7 +33,7 @@ fun PollDetailScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Burası PollDetailScreen")
+            Text("Burası PollDetailScreen ${survey?.title}")
         }
     }
 }

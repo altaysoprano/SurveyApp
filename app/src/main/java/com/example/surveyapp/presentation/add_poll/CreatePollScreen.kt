@@ -10,28 +10,52 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.surveyapp.R
 import com.example.surveyapp.presentation.add_poll.CreatePollViewModel
 import com.example.surveyapp.presentation.add_poll.components.AddOptionButton
+import com.example.surveyapp.presentation.add_poll.components.CreatePollAlertDialog
 import com.example.surveyapp.presentation.add_poll.components.CreatePollButton
 
 @ExperimentalFoundationApi
 @Composable
 fun CreatePollScreen(
-    viewModel: CreatePollViewModel = hiltViewModel()
+    viewModel: CreatePollViewModel = hiltViewModel(),
+    navController: NavController
 ) {
 
     val createPollState = viewModel.createPollState
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = createPollState.value.isAdded) {
+        if(createPollState.value.isAdded) {
+            navController.navigate(context.getString(R.string.main_screen)) {
+                popUpTo(context.getString(R.string.create_poll_screen)) {
+                    inclusive = true
+                }
+                popUpTo(context.getString(R.string.main_screen)) {
+                    inclusive = true
+                }
+            }
+            viewModel.onPollAdded()
+        }
+    }
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
+        CreatePollAlertDialog(createPollState.value.dialogState, createPollState.value.data?.id ?: "") {
+            viewModel.onAlertDialogDismiss()
+        }
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
