@@ -2,6 +2,7 @@ package com.example.surveyapp.presentation.main.components
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,10 +18,8 @@ import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.presentation.main.HomeViewModel
 
 @Composable
-fun SearchSurvey(
-    viewModel: HomeViewModel = hiltViewModel(),
-    navController: NavController,
-    context: Context
+fun SearchSurveyTextfield(
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
 
     val text = viewModel.surveySearchText

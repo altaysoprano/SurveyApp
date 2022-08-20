@@ -1,7 +1,6 @@
 package com.example.surveyapp.presentation.main
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -18,7 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.surveyapp.R
 import com.example.surveyapp.presentation.login.LoginViewModel
-import com.example.surveyapp.presentation.main.components.SearchSurvey
+import com.example.surveyapp.presentation.main.components.SearchSurveyTextfield
 import com.google.gson.Gson
 
 @Composable
@@ -76,7 +75,7 @@ fun MainScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            SearchSurvey(navController = navController, context = context)
+            SearchSurveyTextfield()
             if(searchSurveyState.value.isTextBlank) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text("Please enter a code", color = MaterialTheme.colors.error)

@@ -58,7 +58,8 @@ fun PollDetailScreen(
                                     elevation = 4.dp,
                                     modifier = Modifier
                                         .padding(4.dp)
-                                        .fillMaxWidth()
+                                        .fillMaxWidth(),
+                                    backgroundColor = MaterialTheme.colors.background
                                 ) {
                                     Column(
                                         modifier = Modifier.fillMaxSize()
@@ -70,7 +71,7 @@ fun PollDetailScreen(
                                                 vertical = 12.dp
                                             )
                                         )
-                                        Row(modifier = Modifier.fillMaxWidth()) {
+                                        Row(modifier = Modifier.fillMaxWidth().padding(4.dp).background(MaterialTheme.colors.surface)) {
                                             Box(
                                                 modifier = Modifier
                                                     .fillMaxWidth(
