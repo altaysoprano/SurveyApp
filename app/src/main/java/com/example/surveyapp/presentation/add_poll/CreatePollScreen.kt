@@ -23,6 +23,7 @@ import com.example.surveyapp.presentation.add_poll.CreatePollViewModel
 import com.example.surveyapp.presentation.add_poll.components.AddOptionButton
 import com.example.surveyapp.presentation.add_poll.components.CreatePollAlertDialog
 import com.example.surveyapp.presentation.add_poll.components.CreatePollButton
+import com.example.surveyapp.presentation.main.components.OutlinedTextFieldBackground
 
 @ExperimentalFoundationApi
 @Composable
@@ -35,7 +36,7 @@ fun CreatePollScreen(
     val context = LocalContext.current
 
     LaunchedEffect(key1 = createPollState.value.isAdded) {
-        if(createPollState.value.isAdded) {
+        if (createPollState.value.isAdded) {
             navController.navigate(context.getString(R.string.main_screen)) {
                 popUpTo(context.getString(R.string.create_poll_screen)) {
                     inclusive = true
@@ -50,10 +51,13 @@ fun CreatePollScreen(
 
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
+            .fillMaxSize(),
+        backgroundColor = MaterialTheme.colors.primary
     ) {
-        CreatePollAlertDialog(createPollState.value.dialogState, createPollState.value.data?.id ?: "") {
+        CreatePollAlertDialog(
+            createPollState.value.dialogState,
+            createPollState.value.data?.id ?: ""
+        ) {
             viewModel.onAlertDialogDismiss()
         }
         Box(modifier = Modifier.fillMaxSize()) {
@@ -64,27 +68,33 @@ fun CreatePollScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                        .background(Color.White),
-                    value = createPollState.value.title,
-                    label = { Text(text = "Ask something...") },
-                    onValueChange = {
-                        viewModel.onTitleChanged(it)
-                    },
-                    trailingIcon = {
-                        if (createPollState.value.title.isNotBlank()) {
-                            Icon(
-                                Icons.Default.Clear,
-                                contentDescription = "Clear Text",
-                                modifier = Modifier.clickable { viewModel.onTitleChanged("") }
+                OutlinedTextFieldBackground(color = MaterialTheme.colors.background) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(64.dp),
+                        value = createPollState.value.title,
+                        label = {
+                            Text(
+                                text = "Ask something...",
+                                modifier = Modifier.background(MaterialTheme.colors.background)
                             )
-                        } else {
+                        },
+                        onValueChange = {
+                            viewModel.onTitleChanged(it)
+                        },
+                        trailingIcon = {
+                            if (createPollState.value.title.isNotBlank()) {
+                                Icon(
+                                    Icons.Default.Clear,
+                                    contentDescription = "Clear Text",
+                                    modifier = Modifier.clickable { viewModel.onTitleChanged("") }
+                                )
+                            } else {
+                            }
                         }
-                    }
-                )
+                    )
+                }
                 Spacer(modifier = Modifier.height(24.dp))
                 Column(
                     modifier = Modifier.fillMaxHeight(0.8f)
@@ -97,34 +107,42 @@ fun CreatePollScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                OutlinedTextField(
-                                    modifier = if (option.isNewOption) {
-                                        Modifier.fillMaxWidth(0.9f)
-                                    } else {
-                                        Modifier.fillMaxWidth()
-                                    },
-                                    value = option.name,
-                                    label = { Text(text = "Option ${index + 1}") },
-                                    onValueChange = {
-                                        viewModel.onOptionChanged(it, index)
-                                    },
-                                    singleLine = true,
-                                    trailingIcon = {
-                                        if (createPollState.value.options[index].name.isNotBlank()) {
-                                            Icon(
-                                                Icons.Default.Clear,
-                                                contentDescription = "Clear Text",
-                                                modifier = Modifier.clickable {
-                                                    viewModel.onOptionChanged(
-                                                        "",
-                                                        index
-                                                    )
-                                                }
-                                            )
+                                OutlinedTextFieldBackground(color = MaterialTheme.colors.background) {
+                                    OutlinedTextField(
+                                        modifier = if (option.isNewOption) {
+                                            Modifier.fillMaxWidth(0.9f)
                                         } else {
+                                            Modifier.fillMaxWidth()
+                                        },
+                                        value = option.name,
+                                        label = {
+                                            Text(
+                                                text = "Option ${index + 1}",
+                                                modifier = Modifier.background(MaterialTheme.colors.background)
+                                            )
+                                        },
+                                        onValueChange = {
+                                            viewModel.onOptionChanged(it, index)
+                                        },
+                                        singleLine = true,
+                                        trailingIcon = {
+                                            if (createPollState.value.options[index].name.isNotBlank()) {
+                                                Icon(
+                                                    Icons.Default.Clear,
+                                                    contentDescription = "Clear Text",
+                                                    modifier = Modifier.clickable {
+                                                        viewModel.onOptionChanged(
+                                                            "",
+                                                            index
+                                                        )
+                                                    }
+                                                )
+                                            } else {
+                                            }
                                         }
-                                    }
-                                )
+                                    )
+
+                                }
                                 if (option.isNewOption) {
                                     Icon(
                                         modifier = Modifier
@@ -133,19 +151,23 @@ fun CreatePollScreen(
                                             .padding(2.dp)
                                             .clickable { viewModel.deleteOption(option) },
                                         imageVector = Icons.Default.Delete,
-                                        contentDescription = "Delete Option"
+                                        contentDescription = "Delete Option",
+                                        tint = MaterialTheme.colors.background
                                     )
                                 }
                             }
                             Spacer(modifier = Modifier.height(8.dp))
                         }
                         stickyHeader {
-                            if(createPollState.value.options.size < 10) {
+                            if (createPollState.value.options.size < 10) {
                                 AddOptionButton {
                                     viewModel.addOption()
                                 }
                             } else {
-                                Text("You can add up to 10 options.", color = MaterialTheme.colors.error)
+                                Text(
+                                    "You can add up to 10 options.",
+                                    color = MaterialTheme.colors.error
+                                )
                             }
                             Spacer(modifier = Modifier.height(8.dp))
                         }
@@ -160,8 +182,12 @@ fun CreatePollScreen(
                 Spacer(modifier = Modifier.height(24.dp))
             }
             if (createPollState.value.isLoading) {
-                Box(modifier = Modifier.fillMaxSize().background(color = Color.LightGray.copy(alpha = 0.5f)),
-                    contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
             }

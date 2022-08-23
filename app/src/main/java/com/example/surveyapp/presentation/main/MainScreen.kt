@@ -51,8 +51,7 @@ fun MainScreen(
 
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
+            .fillMaxSize(),
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
@@ -66,7 +65,9 @@ fun MainScreen(
                 },
                 text = { Text("Create A Poll") }
             )
-        })
+        },
+        backgroundColor = MaterialTheme.colors.primary
+    )
     {
         Column(
             modifier = Modifier
