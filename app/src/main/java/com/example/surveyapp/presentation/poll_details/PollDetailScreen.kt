@@ -23,21 +23,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.utils.parseIndexToColor
 
 @ExperimentalFoundationApi
 @Composable
 fun PollDetailScreen(
-    survey: Survey?
+    survey: Survey?,
+    viewModel: PollDetailViewModel = hiltViewModel()
 ) {
-    var animationPlayed by remember {
-        mutableStateOf(false)
-    }
 
-    LaunchedEffect(key1 = true) {
-        animationPlayed = true
-    }
+    val pollDetailState = viewModel.pollDetailState
 
     Scaffold(
         modifier = Modifier
@@ -48,7 +45,7 @@ fun PollDetailScreen(
             Card(
                 elevation = 8.dp,
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(horizontal = 8.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .align(Center),
                 backgroundColor = MaterialTheme.colors.background
@@ -65,116 +62,10 @@ fun PollDetailScreen(
                     survey?.options.let { options ->
                         options?.forEach { totalVotes += it.numberOfVotes }
 
-                        Surface(
-                            elevation = 8.dp,
-                            modifier = Modifier
-                                .background(MaterialTheme.colors.background)
-                                .padding(vertical = 12.dp)
-                        ) {
-                            LazyColumn(
-                                horizontalAlignment = CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                itemsIndexed(options ?: listOf()) { index, option ->
-                                    Card(
-                                        elevation = 4.dp,
-                                        modifier = Modifier
-                                            .padding(4.dp)
-                                            .fillMaxWidth(),
-                                        backgroundColor = MaterialTheme.colors.background
-                                    ) {
-                                        Column(
-                                            modifier = Modifier.fillMaxSize()
-                                        ) {
-
-                                            val ratio =
-                                                if (totalVotes != 0) {
-                                                    option.numberOfVotes.toFloat() / totalVotes.toFloat()
-                                                } else {
-                                                    0.00f
-                                                }
-
-                                            val curPercent = animateFloatAsState(
-                                                targetValue = if (animationPlayed) {
-                                                    ratio
-                                                } else {
-                                                    0f
-                                                },
-                                                animationSpec = tween(
-                                                    1000,
-                                                    0
-                                                )
-                                            )
-
-                                            Row(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(
-                                                        horizontal = 4.dp,
-                                                        vertical = 4.dp
-                                                    ),
-                                                verticalAlignment = CenterVertically,
-                                                horizontalArrangement = SpaceBetween
-                                            ) {
-                                                Text(
-                                                    text = option.name,
-                                                    textAlign = TextAlign.Start
-                                                )
-                                                Text(
-                                                    text = "${option.numberOfVotes} votes (%${
-                                                        "%.2f".format(
-                                                            ratio * 100
-                                                        )
-                                                    })",
-                                                    textAlign = TextAlign.End,
-                                                    fontSize = 14.sp
-                                                )
-
-                                            }
-                                            Row(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(4.dp)
-                                            ) {
-
-                                                Row(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .background(MaterialTheme.colors.surface),
-                                                    verticalAlignment = CenterVertically
-                                                ) {
-                                                    Box(
-                                                        modifier = Modifier
-                                                            .fillMaxWidth(
-                                                                curPercent.value
-                                                            )
-                                                            .padding()
-                                                            .background(parseIndexToColor(index = index))
-                                                    ) {
-                                                        Text("")
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                stickyHeader {
-                                    Column(modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 8.dp, horizontal = 4.dp), verticalArrangement = Arrangement.Center) {
-                                        Text(
-                                            text = "Total Votes: $totalVotes",
-                                            textAlign = TextAlign.End,
-                                            modifier = Modifier
-                                                .align(
-                                                    End
-                                                ),
-                                            letterSpacing = (-0.7).sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    }
-                                }
-                            }
+                        if (pollDetailState.value.isVoted) {
+                            VotedPollScreen(totalVotes = totalVotes, options = options)
+                        } else {
+                            UnvotedPollScreen(options = options) { viewModel.onVoted() }
                         }
                     }
                 }
