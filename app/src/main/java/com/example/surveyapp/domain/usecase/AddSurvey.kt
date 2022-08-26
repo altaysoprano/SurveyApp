@@ -6,7 +6,6 @@ import com.example.surveyapp.data.repository.FirebaseRepository
 class AddSurvey(
     private val repo: FirebaseRepository
 ) {
-
     suspend operator fun invoke(
         title: String,
         options: List<Option>

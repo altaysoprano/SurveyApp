@@ -42,7 +42,8 @@ object AppModule {
         getSurveys = GetSurveys(repo),
         addSurvey = AddSurvey(repo),
         firebaseAuthUseCase = FirebaseAuthUseCase(repo),
-        getSurveyById = GetSurveyById(repo)
+        getSurveyById = GetSurveyById(repo),
+        voteSurvey = VoteSurvey(repo)
     )
 
 

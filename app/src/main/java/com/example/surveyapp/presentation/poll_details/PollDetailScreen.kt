@@ -44,12 +44,13 @@ fun PollDetailScreen(
                     var totalVotes = 0
 
                     Text(text = "${survey?.title}", fontWeight = FontWeight.Bold)
-                    survey?.options.let { options ->
-                        options?.forEach { totalVotes += it.numberOfVotes }
+                    survey?.let { survey ->
+                        survey.options.forEach { totalVotes += it.numberOfVotes }
 
-                        PollScreen(totalVotes = totalVotes, options = options,
-                            isVoted = pollDetailState.value.isVoted) {
-                            viewModel.onVoted()
+                        PollScreen(
+                            totalVotes = totalVotes, options = survey.options,
+                            isVoted = pollDetailState.value.isVoted) { optionId: Int ->
+                            survey.id?.let { id -> viewModel.onVote(options = survey.options, optionId = optionId, id = id) }
                         }
                     }
                 }

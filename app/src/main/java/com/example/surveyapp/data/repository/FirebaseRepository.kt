@@ -50,6 +50,19 @@ class FirebaseRepository(
         }
     }
 
+    suspend fun voteSurvey(id: String, optionId: Int, options: List<Option>) = flow {
+        try {
+            emit(Response.Loading)
+            val updatedOptions = options
+            updatedOptions[optionId].numberOfVotes += 1
+            Log.d("Mesaj: ", updatedOptions[optionId].numberOfVotes.toString())
+            surveysRef.document(id).update(mapOf("options" to updatedOptions)).await()
+            emit(Response.Success(null))
+        } catch (e: Exception) {
+            emit(Response.Error(e.message ?: e.toString()))
+        }
+    }
+
     fun getSurveyById(id: String) = callbackFlow {
         trySend(Response.Loading)
         try {

@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -24,7 +25,10 @@ import com.example.surveyapp.utils.parseIndexToColor
 
 @ExperimentalFoundationApi
 @Composable
-fun VotedPollScreen(totalVotes: Int, options: List<Option>?) {
+fun PollScreen(
+    totalVotes: Int, options: List<Option>?, isVoted: Boolean,
+    onVote: (optionId: Int) -> Unit
+) {
 
     var animationPlayed by remember {
         mutableStateOf(false)
@@ -33,7 +37,6 @@ fun VotedPollScreen(totalVotes: Int, options: List<Option>?) {
     LaunchedEffect(key1 = true) {
         animationPlayed = true
     }
-
 
     Surface(
         elevation = 8.dp,
@@ -47,14 +50,17 @@ fun VotedPollScreen(totalVotes: Int, options: List<Option>?) {
         ) {
             itemsIndexed(options ?: listOf()) { index, option ->
                 Card(
-                    elevation = 4.dp,
                     modifier = Modifier
-                        .padding(4.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .height(72.dp)
+                        .clickable {
+                            onVote(index)
+                        },
                     backgroundColor = MaterialTheme.colors.background
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center
                     ) {
 
                         val ratio =
@@ -71,7 +77,7 @@ fun VotedPollScreen(totalVotes: Int, options: List<Option>?) {
                                 0f
                             },
                             animationSpec = tween(
-                                1000,
+                                1500,
                                 0
                             )
                         )
@@ -90,38 +96,40 @@ fun VotedPollScreen(totalVotes: Int, options: List<Option>?) {
                                 text = option.name,
                                 textAlign = TextAlign.Start
                             )
-                            Text(
-                                text = "${option.numberOfVotes} votes (%${
-                                    "%.2f".format(
-                                        ratio * 100
-                                    )
-                                })",
-                                textAlign = TextAlign.End,
-                                fontSize = 14.sp
-                            )
-
+                            if (isVoted) {
+                                Text(
+                                    text = "${option.numberOfVotes} votes (%${
+                                        "%.2f".format(
+                                            ratio * 100
+                                        )
+                                    })",
+                                    textAlign = TextAlign.End,
+                                    fontSize = 14.sp
+                                )
+                            }
                         }
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
                         ) {
-
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(MaterialTheme.colors.surface),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Box(
+                            if (isVoted) {
+                                Row(
                                     modifier = Modifier
-                                        .fillMaxWidth(
-                                            curPercent.value
-                                        )
-                                        .padding()
-                                        .background(parseIndexToColor(index = index))
+                                        .fillMaxWidth()
+                                        .background(MaterialTheme.colors.surface),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text("")
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth(
+                                                curPercent.value
+                                            )
+                                            .padding()
+                                            .background(parseIndexToColor(index = index))
+                                    ) {
+                                        Text("")
+                                    }
                                 }
                             }
                         }
@@ -129,28 +137,30 @@ fun VotedPollScreen(totalVotes: Int, options: List<Option>?) {
                 }
             }
             stickyHeader {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp, horizontal = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Text(
-                        text = "Total Votes: ",
-                        letterSpacing = (-0.7).sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Card(
-                        backgroundColor = Color.Black
+                if (isVoted) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp, horizontal = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
                     ) {
                         Text(
-                            modifier = Modifier.padding(4.dp),
-                            text = "$totalVotes",
+                            text = "Total Votes: ",
                             letterSpacing = (-0.7).sp,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Bold
                         )
+                        Card(
+                            backgroundColor = Color.Black
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(4.dp),
+                                text = "$totalVotes",
+                                letterSpacing = (-0.7).sp,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
                     }
                 }
             }

@@ -6,7 +6,7 @@ import com.example.surveyapp.data.models.Survey
 data class CreatePollState(
     val data: Survey? = null,
     val title: String = "",
-    val options: List<Option> = listOf(Option("", 0), Option("", 0)),
+    val options: List<Option> = listOf(Option(0, "", 0), Option(0,"", 0)),
     val isLoading: Boolean = false,
     val error: String = "",
     val isAdded: Boolean = false,

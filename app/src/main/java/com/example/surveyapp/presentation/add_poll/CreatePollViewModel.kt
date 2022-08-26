@@ -57,7 +57,7 @@ class CreatePollViewModel @Inject constructor(
 
     fun addOption() {
         val newOptions = _createPollState.value.options.toMutableList()
-        newOptions.add(Option("", 0, true))
+        newOptions.add(Option(0, "", 0, true))
         _createPollState.value = _createPollState.value.copy(
             options = newOptions
         )
@@ -73,7 +73,7 @@ class CreatePollViewModel @Inject constructor(
 
     fun onOptionChanged(name: String, index: Int) {
         val newOptions = _createPollState.value.options.toMutableList()
-        newOptions.set(index, Option(name, 0, isNewOption = index != 0 && index != 1))
+        newOptions.set(index, Option(index, name, 0, isNewOption = index != 0 && index != 1))
         _createPollState.value = _createPollState.value.copy(
             options = newOptions
         )
