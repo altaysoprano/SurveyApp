@@ -1,5 +1,6 @@
 package com.example.surveyapp.presentation.poll_details
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -20,34 +21,26 @@ class PollDetailViewModel @Inject constructor(
     private val _pollDetailState = mutableStateOf(PollDetailState())
     val pollDetailState = _pollDetailState
 
-/*
-    fun onVoted() {
-        _pollDetailState.value = _pollDetailState.value.copy(
-            isVoted = true
-        )
-    }
-*/
-
     fun onVote(id: String, optionId: Int, options: List<Option>) = viewModelScope.launch {
         useCases.voteSurvey(id, optionId, options).collect { response ->
             when (response) {
                 is Response.Loading -> {
                     _pollDetailState.value = _pollDetailState.value.copy(
-                        isVoted = false
+                        isLoading = true
                     )
                 }
                 is Response.Success -> {
                     _pollDetailState.value = _pollDetailState.value.copy(
-                        isVoted = true
+                        isVoted = true,
+                        isLoading = false
                     )
                 }
                 is Response.Error -> {
                     _pollDetailState.value = _pollDetailState.value.copy(
-                        isVoted = false
+                        isLoading = false
                     )
                 }
             }
         }
     }
-
 }

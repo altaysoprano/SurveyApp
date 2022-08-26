@@ -4,9 +4,11 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,10 +51,20 @@ fun PollDetailScreen(
 
                         PollScreen(
                             totalVotes = totalVotes, options = survey.options,
-                            isVoted = pollDetailState.value.isVoted) { optionId: Int ->
+                            isVoted = pollDetailState.value.isVoted) { optionId ->
                             survey.id?.let { id -> viewModel.onVote(options = survey.options, optionId = optionId, id = id) }
                         }
                     }
+                }
+            }
+        }
+        if (pollDetailState.value.isLoading) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.LightGray.copy(alpha = 0.5f)), contentAlignment = Alignment.Center) {
+                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    CircularProgressIndicator()
+                    Text("Vote is saving...")
                 }
             }
         }
