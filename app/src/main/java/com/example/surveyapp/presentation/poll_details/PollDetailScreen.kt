@@ -51,18 +51,32 @@ fun PollDetailScreen(
 
                         PollScreen(
                             totalVotes = totalVotes, options = survey.options,
-                            isVoted = pollDetailState.value.isVoted) { optionId ->
-                            survey.id?.let { id -> viewModel.onVote(options = survey.options, optionId = optionId, id = id) }
+                            isVoted = pollDetailState.value.isVoted,
+                            isLoading = pollDetailState.value.isLoading
+                        ) { optionId ->
+                            survey.id?.let { id ->
+                                viewModel.onVote(
+                                    options = survey.options,
+                                    optionId = optionId,
+                                    id = id
+                                )
+                            }
                         }
                     }
                 }
             }
         }
         if (pollDetailState.value.isLoading) {
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.LightGray.copy(alpha = 0.5f)), contentAlignment = Alignment.Center) {
-                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color.LightGray.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = CenterHorizontally
+                ) {
                     CircularProgressIndicator()
                     Text("Vote is saving...")
                 }

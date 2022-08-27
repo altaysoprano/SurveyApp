@@ -24,7 +24,7 @@ import com.example.surveyapp.utils.parseIndexToColor
 @ExperimentalFoundationApi
 @Composable
 fun PollScreen(
-    totalVotes: Int, options: List<Option>?, isVoted: Boolean,
+    totalVotes: Int, options: List<Option>?, isVoted: Boolean, isLoading: Boolean,
     onVote: (optionId: Int) -> Unit
 ) {
 
@@ -48,7 +48,7 @@ fun PollScreen(
         ) {
             itemsIndexed(options ?: listOf()) { index, option ->
                 Card(
-                    modifier = if (isVoted) {
+                    modifier = if (isVoted || isLoading) {
                         Modifier
                             .fillMaxWidth()
                             .height(72.dp)
