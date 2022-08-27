@@ -28,16 +28,6 @@ class HomeViewModel @Inject constructor(
     private val _searchSurveyState = mutableStateOf(SearchSurveyState())
     val searchSurveyState = _searchSurveyState
 
-/*
-    init {
-        Log.d("Mesaj: ", getRandomString())
-    }
-
-    fun getRandomString() : String {
-        return UUID.randomUUID().toString().substring(0,6)
-    }
-*/
-
     private fun getSurveys() = viewModelScope.launch {
         useCases.getSurveys().collect { response ->
             surveysReference = response as Response<List<Survey>>

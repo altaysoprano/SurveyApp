@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -47,14 +48,22 @@ fun PollScreen(
         ) {
             itemsIndexed(options ?: listOf()) { index, option ->
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(72.dp)
-                        .clickable {
-                            if (!isVoted) {
+                    modifier = if (isVoted) {
+                        Modifier
+                            .fillMaxWidth()
+                            .height(72.dp)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {}
+                    } else {
+                        Modifier
+                            .fillMaxWidth()
+                            .height(72.dp)
+                            .clickable {
                                 onVote(index)
                             }
-                        },
+                    },
                     backgroundColor = MaterialTheme.colors.background
                 ) {
                     Column(

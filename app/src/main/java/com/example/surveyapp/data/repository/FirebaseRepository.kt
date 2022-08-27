@@ -1,9 +1,9 @@
 package com.example.surveyapp.data.repository
 
-import android.util.Log
 import com.example.surveyapp.common.Constants.TITLE
 import com.example.surveyapp.common.Response
 import com.example.surveyapp.data.firebase.FirebaseAuthLoginSourceProvider
+import com.example.surveyapp.data.models.Email
 import com.example.surveyapp.data.models.Option
 import com.example.surveyapp.data.models.Survey
 import com.google.firebase.auth.AuthCredential
@@ -50,12 +50,16 @@ class FirebaseRepository(
         }
     }
 
-    suspend fun voteSurvey(id: String, optionId: Int, options: List<Option>) = flow {
+    suspend fun voteSurvey(emailName: String, id: String, optionId: Int, options: List<Option>) = flow {
         try {
             emit(Response.Loading)
+            //BURADA IF(EMAİL YOKSA) KONTROLÜ
+            val email = Email(
+                name = emailName
+            )
+            surveysRef.document(id).collection("emails").document(email.name).set(email).await()
             val updatedOptions = options
             updatedOptions[optionId].numberOfVotes += 1
-            Log.d("Mesaj: ", updatedOptions[optionId].numberOfVotes.toString())
             surveysRef.document(id).update(mapOf("options" to updatedOptions)).await()
             emit(Response.Success(null))
         } catch (e: Exception) {
