@@ -43,7 +43,8 @@ object AppModule {
         addSurvey = AddSurvey(repo),
         firebaseAuthUseCase = FirebaseAuthUseCase(repo),
         getSurveyById = GetSurveyById(repo),
-        voteSurvey = VoteSurvey(repo)
+        voteSurvey = VoteSurvey(repo),
+        getEmailById = GetEmailById(repo)
     )
 
 

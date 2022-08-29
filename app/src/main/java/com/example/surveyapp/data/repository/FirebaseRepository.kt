@@ -1,5 +1,6 @@
 package com.example.surveyapp.data.repository
 
+import android.util.Log
 import com.example.surveyapp.common.Constants.TITLE
 import com.example.surveyapp.common.Response
 import com.example.surveyapp.data.firebase.FirebaseAuthLoginSourceProvider
@@ -50,21 +51,43 @@ class FirebaseRepository(
         }
     }
 
-    suspend fun voteSurvey(emailName: String, id: String, optionId: Int, options: List<Option>) = flow {
-        try {
-            emit(Response.Loading)
-            //BURADA IF(EMAİL YOKSA) KONTROLÜ
-            val email = Email(
-                name = emailName
-            )
-            surveysRef.document(id).collection("emails").document(email.name).set(email).await()
-            val updatedOptions = options
-            updatedOptions[optionId].numberOfVotes += 1
-            surveysRef.document(id).update(mapOf("options" to updatedOptions)).await()
-            emit(Response.Success(null))
-        } catch (e: Exception) {
-            emit(Response.Error(e.message ?: e.toString()))
+    suspend fun voteSurvey(emailName: String, id: String, optionId: Int, options: List<Option>) =
+        flow {
+            try {
+                emit(Response.Loading)
+                val email = Email(
+                    name = emailName
+                )
+                surveysRef.document(id).collection("emails").document(email.name).set(email).await()
+                val updatedOptions = options
+                updatedOptions[optionId].numberOfVotes += 1
+                surveysRef.document(id).update(mapOf("options" to updatedOptions)).await()
+                emit(Response.Success(null)) //BURADA DAHA SONRA VERİ GÖNDEREBİLİRSİN
+            } catch (e: Exception) {
+                emit(Response.Error(e.message ?: e.toString()))
+            }
         }
+
+    fun getEmailById(email: String, id: String) = callbackFlow {
+        trySend(Response.Loading)
+        try {
+            surveysRef.document(id).collection("emails").document(email).get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val result = task.result
+                        if (result.exists()) {
+                            Log.d("Mesaj: ", "firebase döküman var")
+                            trySend(Response.Success(null)) //BURADA DAHA SONRA VERİ GÖNDEREBİLİRSİN
+                        } else {
+                            Log.d("Mesaj: ", "firebase döküman var")
+                            trySend(Response.Error("Email not found"))
+                        }
+                    }
+                }
+        } catch (e: Exception) {
+            trySend(Response.Error(e.message.toString()))
+        }
+        awaitClose { cancel() }
     }
 
     fun getSurveyById(id: String) = callbackFlow {
@@ -72,22 +95,21 @@ class FirebaseRepository(
         try {
             surveysRef.document(id).get()
                 .addOnSuccessListener { document ->
-                    if(document.exists()) {
+                    if (document.exists()) {
                         val survey = document.toObject(Survey::class.java)
                         trySend(Response.Success(survey))
-                    }
-                    else {
+                    } else {
                         trySend(Response.Error("Survey not found"))
                     }
                 }
                 .addOnFailureListener {
                     trySend(Response.Error("A problem has occured, please try again"))
                 }
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             trySend(Response.Error(e.message.toString()))
         }
 
-        awaitClose {cancel()}
+        awaitClose { cancel() }
     }
 
     suspend fun loginWithCredential(authCredential: AuthCredential) =

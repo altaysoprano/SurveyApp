@@ -78,7 +78,7 @@ fun PollDetailScreen(
                     horizontalAlignment = CenterHorizontally
                 ) {
                     CircularProgressIndicator()
-                    Text("Vote is saving...")
+                    Text(pollDetailState.value.loadingText)
                 }
             }
         }
