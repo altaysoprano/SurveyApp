@@ -55,6 +55,12 @@ class CreatePollViewModel @Inject constructor(
         )
     }
 
+    fun onCheckBoxChanged(isChecked: Boolean) {
+        _createPollState.value = _createPollState.value.copy(
+            isCheckBoxChecked = isChecked
+        )
+    }
+
     fun addOption() {
         val newOptions = _createPollState.value.options.toMutableList()
         newOptions.add(Option(0, "", 0, true))

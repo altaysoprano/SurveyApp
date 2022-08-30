@@ -27,7 +27,7 @@ class PollDetailViewModel @Inject constructor(
     private val _pollDetailState = mutableStateOf(PollDetailState())
     val pollDetailState = _pollDetailState
 
-    private lateinit var auth: FirebaseAuth
+    private var auth: FirebaseAuth
 
     init {
         auth = Firebase.auth
@@ -43,20 +43,17 @@ class PollDetailViewModel @Inject constructor(
         useCases.getEmailById(email, id).collect { response ->
             when (response) {
                 is Response.Loading -> {
-                    Log.d("Mesaj: ", "email kontrol ediliyor...")
                     _pollDetailState.value = _pollDetailState.value.copy(
                         isLoading = true
                     )
                 }
                 is Response.Success -> {
-                    Log.d("Mesaj: ", "email var")
                     _pollDetailState.value = _pollDetailState.value.copy(
                         isLoading = false,
                         isVoted = true
                     )
                 }
                 is Response.Error -> {
-                    Log.d("Mesaj: ", "email yok error")
                     _pollDetailState.value = _pollDetailState.value.copy(
                         isLoading = false //BURADA VE ONVOTE FONKSİYONUNDA BAŞARISIZLIK DURUMLARINDA BİR ŞEYLER YAPTIRABİLİRSİN
                     )

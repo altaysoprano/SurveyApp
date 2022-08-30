@@ -13,8 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -191,14 +193,27 @@ fun CreatePollScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
             }
-            CreatePollButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .padding(8.dp)
-                    .align(Alignment.BottomCenter),
-                isButtonEnabled = createPollState.value.title.isNotBlank() && createPollState.value.options.all { it.name.isNotBlank() }) {
-                viewModel.addSurvey(createPollState.value.title, createPollState.value.options)
+            Column(modifier = Modifier.align(Alignment.BottomCenter)) {
+                val isChecked = createPollState.value.isCheckBoxChecked
+                Row(modifier = Modifier.fillMaxWidth().padding(8.dp).alpha(if(isChecked) 1f else 0.5f).clickable { viewModel.onCheckBoxChanged(!isChecked) },
+                    horizontalArrangement = Arrangement.Center) {
+                    Text("I want to vote in this poll", fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Checkbox(
+                        checked = isChecked,
+                        onCheckedChange = { viewModel.onCheckBoxChanged(it) },
+                        enabled = true,
+                        colors = CheckboxDefaults.colors(checkmarkColor = Color.Green)
+                    )
+                }
+                CreatePollButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .padding(8.dp),
+                    isButtonEnabled = createPollState.value.title.isNotBlank() && createPollState.value.options.all { it.name.isNotBlank() }) {
+                    viewModel.addSurvey(createPollState.value.title, createPollState.value.options)
+                }
             }
         }
     }

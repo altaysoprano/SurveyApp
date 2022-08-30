@@ -10,5 +10,6 @@ data class CreatePollState(
     val isLoading: Boolean = false,
     val error: String = "",
     val isAdded: Boolean = false,
-    val dialogState: Boolean = false
+    val dialogState: Boolean = false,
+    val isCheckBoxChecked: Boolean = false
 )

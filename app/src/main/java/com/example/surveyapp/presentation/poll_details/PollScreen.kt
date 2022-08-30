@@ -33,13 +33,8 @@ fun PollScreen(
         mutableStateOf(false)
     }
 
-    var barVisibilityAnimationPlayed by remember {
-        mutableStateOf(false)
-    }
-
     LaunchedEffect(key1 = isVoted) {
         barMovementAnimationPlayed = true
-        barVisibilityAnimationPlayed = true
     }
 
     Surface(
@@ -84,18 +79,6 @@ fun PollScreen(
                                 0.00f
                             }
 
-                        val visibilityVoteProperties = animateFloatAsState(
-                            targetValue = if(barVisibilityAnimationPlayed) {
-                                1f
-                            } else {
-                                0f
-                            },
-                            animationSpec = tween(
-                                1000,
-                                0
-                            )
-                        )
-
                         val curPercent = animateFloatAsState(
                             targetValue = if (barMovementAnimationPlayed) {
                                 ratio
@@ -104,7 +87,7 @@ fun PollScreen(
                             },
                             animationSpec = tween(
                                 1250,
-                                1000
+                                0
                             )
                         )
 
@@ -131,7 +114,6 @@ fun PollScreen(
                                     })",
                                     textAlign = TextAlign.End,
                                     fontSize = 14.sp,
-                                    modifier = Modifier.alpha(visibilityVoteProperties.value)
                                 )
                             }
                         }
@@ -139,7 +121,6 @@ fun PollScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
-                                .alpha(visibilityVoteProperties.value)
                         ) {
                             if (isVoted) {
                                 Row(
