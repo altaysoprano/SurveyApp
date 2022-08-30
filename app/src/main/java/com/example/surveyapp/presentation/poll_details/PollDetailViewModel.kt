@@ -3,6 +3,7 @@ package com.example.surveyapp.presentation.poll_details
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.surveyapp.common.Response
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PollDetailViewModel @Inject constructor(
-    private val useCases: UseCases
+    private val useCases: UseCases,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _pollDetailState = mutableStateOf(PollDetailState())
@@ -32,7 +34,9 @@ class PollDetailViewModel @Inject constructor(
         val currentUser = auth.currentUser
         val emailName = currentUser?.email
 
-        getEmailById(emailName ?: "", "aRVkoe")
+        val surveyId = savedStateHandle.get<Survey>("survey")?.id
+
+        getEmailById(emailName ?: "", surveyId ?: "")
     }
 
     fun getEmailById(email: String, id: String) = viewModelScope.launch {

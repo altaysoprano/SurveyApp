@@ -13,6 +13,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -28,12 +29,17 @@ fun PollScreen(
     onVote: (optionId: Int) -> Unit
 ) {
 
-    var animationPlayed by remember {
+    var barMovementAnimationPlayed by remember {
         mutableStateOf(false)
     }
 
-    LaunchedEffect(key1 = true) {
-        animationPlayed = true
+    var barVisibilityAnimationPlayed by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = isVoted) {
+        barMovementAnimationPlayed = true
+        barVisibilityAnimationPlayed = true
     }
 
     Surface(
@@ -78,15 +84,27 @@ fun PollScreen(
                                 0.00f
                             }
 
+                        val visibilityVoteProperties = animateFloatAsState(
+                            targetValue = if(barVisibilityAnimationPlayed) {
+                                1f
+                            } else {
+                                0f
+                            },
+                            animationSpec = tween(
+                                1000,
+                                0
+                            )
+                        )
+
                         val curPercent = animateFloatAsState(
-                            targetValue = if (animationPlayed) {
+                            targetValue = if (barMovementAnimationPlayed) {
                                 ratio
                             } else {
                                 0f
                             },
                             animationSpec = tween(
-                                1500,
-                                0
+                                1250,
+                                1000
                             )
                         )
 
@@ -112,7 +130,8 @@ fun PollScreen(
                                         )
                                     })",
                                     textAlign = TextAlign.End,
-                                    fontSize = 14.sp
+                                    fontSize = 14.sp,
+                                    modifier = Modifier.alpha(visibilityVoteProperties.value)
                                 )
                             }
                         }
@@ -120,6 +139,7 @@ fun PollScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
+                                .alpha(visibilityVoteProperties.value)
                         ) {
                             if (isVoted) {
                                 Row(
