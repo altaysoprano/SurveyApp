@@ -99,7 +99,7 @@ fun CreatePollScreen(
                 }
                 Spacer(modifier = Modifier.height(24.dp))
                 Column(
-                    modifier = Modifier.fillMaxHeight(0.8f)
+                    modifier = Modifier.fillMaxHeight(0.75f)
                 ) {
                     LazyColumn(
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -195,7 +195,11 @@ fun CreatePollScreen(
             }
             Column(modifier = Modifier.align(Alignment.BottomCenter)) {
                 val isChecked = createPollState.value.isCheckBoxChecked
-                Row(modifier = Modifier.fillMaxWidth().padding(8.dp).alpha(if(isChecked) 1f else 0.5f).clickable { viewModel.onCheckBoxChanged(!isChecked) },
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .alpha(if (isChecked) 1f else 0.5f)
+                    .clickable { viewModel.onCheckBoxChanged(!isChecked) },
                     horizontalArrangement = Arrangement.Center) {
                     Text("I want to vote in this poll", fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.width(16.dp))
@@ -210,7 +214,7 @@ fun CreatePollScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(64.dp)
-                        .padding(8.dp),
+                        .padding(bottom = 8.dp, end = 8.dp, start = 8.dp),
                     isButtonEnabled = createPollState.value.title.isNotBlank() && createPollState.value.options.all { it.name.isNotBlank() }) {
                     viewModel.addSurvey(createPollState.value.title, createPollState.value.options)
                 }
