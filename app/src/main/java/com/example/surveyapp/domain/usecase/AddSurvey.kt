@@ -7,7 +7,9 @@ class AddSurvey(
     private val repo: FirebaseRepository
 ) {
     suspend operator fun invoke(
+        emailName: String,
+        isOwnVoteChecked: Boolean,
         title: String,
         options: List<Option>
-    ) = repo.addSurveyToFirestore(title, options)
+    ) = repo.addSurveyToFirestore(isOwnVoteChecked, emailName, title, options)
 }

@@ -63,7 +63,7 @@ fun MainScreen(
                         contentDescription = "Create A Poll"
                     )
                 },
-                text = { Text("Create A Poll") }
+                text = { Text("Create A Survey") }
             )
         },
         backgroundColor = MaterialTheme.colors.primary

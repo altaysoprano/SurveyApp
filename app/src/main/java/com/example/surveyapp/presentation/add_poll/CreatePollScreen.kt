@@ -74,7 +74,7 @@ fun CreatePollScreen(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(64.dp),
+                            .height(108.dp),
                         value = createPollState.value.title,
                         label = {
                             Text(
@@ -201,7 +201,7 @@ fun CreatePollScreen(
                     .alpha(if (isChecked) 1f else 0.5f)
                     .clickable { viewModel.onCheckBoxChanged(!isChecked) },
                     horizontalArrangement = Arrangement.Center) {
-                    Text("I want to vote in this poll", fontWeight = FontWeight.Bold)
+                    Text("I want to vote in this survey", fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.width(16.dp))
                     Checkbox(
                         checked = isChecked,

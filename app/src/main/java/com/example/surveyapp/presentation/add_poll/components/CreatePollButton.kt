@@ -35,7 +35,7 @@ fun CreatePollButton(
         ),
         enabled = isButtonEnabled
     ) {
-        Text(text = "Create Poll", modifier = Modifier.padding(4.dp))
+        Text(text = "Create Survey", modifier = Modifier.padding(4.dp))
     }
 
 }

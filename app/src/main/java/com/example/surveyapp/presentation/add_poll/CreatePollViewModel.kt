@@ -10,6 +10,9 @@ import com.example.surveyapp.data.models.Option
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.data.repository.FirebaseRepository
 import com.example.surveyapp.domain.usecase.UseCases
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,9 +25,16 @@ class CreatePollViewModel @Inject constructor(
     private val _createPollState = mutableStateOf(CreatePollState())
     val createPollState = _createPollState
 
+    private lateinit var auth: FirebaseAuth
+
     fun addSurvey(title: String, options: List<Option>) =
         viewModelScope.launch {
-            useCases.addSurvey(title, options).collect { response ->
+            val isOwnVoteChecked = _createPollState.value.isCheckBoxChecked
+            auth = Firebase.auth
+            val currentUser = auth.currentUser
+            val emailName = currentUser?.email
+
+            useCases.addSurvey(emailName ?: "", isOwnVoteChecked, title, options).collect { response ->
                 when (response) {
                     is Response.Loading -> {
                         _createPollState.value = _createPollState.value.copy(

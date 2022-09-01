@@ -35,7 +35,7 @@ class FirebaseRepository(
         }
     }
 
-    suspend fun addSurveyToFirestore(title: String, options: List<Option>) = flow {
+    suspend fun addSurveyToFirestore(isOwnVoteChecked: Boolean, emailName: String, title: String, options: List<Option>) = flow {
         try {
             emit(Response.Loading)
             val id = surveysRef.document().id.take(6)
@@ -45,6 +45,12 @@ class FirebaseRepository(
                 options = options
             )
             surveysRef.document(id).set(survey).await()
+            if(!isOwnVoteChecked) {
+                val email = Email(
+                    name = emailName
+                )
+                surveysRef.document(id).collection("emails").document(email.name).set(email).await()
+            }
             emit(Response.Success(survey))
         } catch (e: Exception) {
             emit(Response.Error(e.message ?: e.toString()))
