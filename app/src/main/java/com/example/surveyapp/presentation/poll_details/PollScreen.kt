@@ -15,17 +15,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.surveyapp.R
+import com.example.surveyapp.data.models.Email
 import com.example.surveyapp.data.models.Option
 import com.example.surveyapp.utils.parseIndexToColor
 
 @ExperimentalFoundationApi
 @Composable
 fun PollScreen(
-    totalVotes: Int, options: List<Option>?, isVoted: Boolean, isLoading: Boolean,
+    totalVotes: Int, options: List<Option>?, isVoted: Boolean, isLoading: Boolean, email: Email?,
     onVote: (optionId: Int) -> Unit
 ) {
 
@@ -53,6 +56,7 @@ fun PollScreen(
                         Modifier
                             .fillMaxWidth()
                             .height(72.dp)
+                            .alpha(if (index == email?.votedOptionId) 0.5f else 1f)
                             .clickable(
                                 indication = null,
                                 interactionSource = remember { MutableInteractionSource() }
@@ -101,10 +105,17 @@ fun PollScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Absolute.SpaceBetween
                         ) {
-                            Text(
-                                text = option.name,
-                                textAlign = TextAlign.Start
-                            )
+                            Row {
+                                Text(
+                                    text = option.name,
+                                    textAlign = TextAlign.Start
+                                )
+                                if(index == email?.votedOptionId) {
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Icon(painter = painterResource(id = R.drawable.ic_check_24),
+                                        contentDescription = "Check Icon", tint = Color(0XFF6ACB49))
+                                }
+                            }
                             if (isVoted) {
                                 Text(
                                     text = "${option.numberOfVotes} votes (%${

@@ -50,7 +50,8 @@ class PollDetailViewModel @Inject constructor(
                 is Response.Success -> {
                     _pollDetailState.value = _pollDetailState.value.copy(
                         isLoading = false,
-                        isVoted = true
+                        isVoted = true,
+                        email = response.data
                     )
                 }
                 is Response.Error -> {
@@ -78,7 +79,8 @@ class PollDetailViewModel @Inject constructor(
                 is Response.Success -> {
                     _pollDetailState.value = _pollDetailState.value.copy(
                         isVoted = true,
-                        isLoading = false
+                        isLoading = false,
+                        email = response.data
                     )
                 }
                 is Response.Error -> {

@@ -52,7 +52,8 @@ fun PollDetailScreen(
                         PollScreen(
                             totalVotes = totalVotes, options = survey.options,
                             isVoted = pollDetailState.value.isVoted,
-                            isLoading = pollDetailState.value.isLoading
+                            isLoading = pollDetailState.value.isLoading,
+                            email = pollDetailState.value.email
                         ) { optionId ->
                             survey.id?.let { id ->
                                 viewModel.onVote(

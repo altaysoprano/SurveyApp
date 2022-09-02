@@ -62,13 +62,14 @@ class FirebaseRepository(
             try {
                 emit(Response.Loading)
                 val email = Email(
-                    name = emailName
+                    name = emailName,
+                    votedOptionId = optionId
                 )
                 surveysRef.document(id).collection("emails").document(email.name).set(email).await()
                 val updatedOptions = options
                 updatedOptions[optionId].numberOfVotes += 1
                 surveysRef.document(id).update(mapOf("options" to updatedOptions)).await()
-                emit(Response.Success(null)) //BURADA DAHA SONRA VERİ GÖNDEREBİLİRSİN
+                emit(Response.Success(email)) //BURADA DAHA SONRA VERİ GÖNDEREBİLİRSİN
             } catch (e: Exception) {
                 emit(Response.Error(e.message ?: e.toString()))
             }
@@ -82,10 +83,9 @@ class FirebaseRepository(
                     if (task.isSuccessful) {
                         val result = task.result
                         if (result.exists()) {
-                            Log.d("Mesaj: ", "firebase döküman var")
-                            trySend(Response.Success(null)) //BURADA DAHA SONRA VERİ GÖNDEREBİLİRSİN
+                            val email = result.toObject(Email::class.java)
+                            trySend(Response.Success(email)) //BURADA DAHA SONRA VERİ GÖNDEREBİLİRSİN
                         } else {
-                            Log.d("Mesaj: ", "firebase döküman var")
                             trySend(Response.Error("Email not found"))
                         }
                     }
