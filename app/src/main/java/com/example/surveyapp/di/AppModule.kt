@@ -1,6 +1,7 @@
 package com.example.surveyapp.di
 
 import com.example.surveyapp.common.Constants.SURVEYS
+import com.example.surveyapp.common.Constants.USERS
 import com.example.surveyapp.data.firebase.FirebaseAuthLoginSourceProvider
 import com.example.surveyapp.data.repository.FirebaseRepository
 import com.example.surveyapp.domain.usecase.*
@@ -12,6 +13,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -24,15 +26,24 @@ object AppModule {
 
     @Provides
     @Singleton
+    @Named("SurveysRef")
     fun provideSurveysRef(
         db: FirebaseFirestore
     ) = db.collection(SURVEYS)
 
     @Provides
     @Singleton
-    fun provideBooksRepository(
-        surveysRef: CollectionReference
-    ): FirebaseRepository = FirebaseRepository(FirebaseAuthLoginSourceProvider(), surveysRef)
+    @Named("UsersRef")
+    fun provideUsersRef(
+        db: FirebaseFirestore
+    ) = db.collection(USERS)
+
+    @Provides
+    @Singleton
+    fun provideRepository(
+        @Named("SurveysRef") surveysRef: CollectionReference,
+        @Named("UsersRef") usersRef: CollectionReference
+    ): FirebaseRepository = FirebaseRepository(FirebaseAuthLoginSourceProvider(), surveysRef, usersRef)
 
     @Provides
     @Singleton
@@ -44,7 +55,8 @@ object AppModule {
         firebaseAuthUseCase = FirebaseAuthUseCase(repo),
         getSurveyById = GetSurveyById(repo),
         voteSurvey = VoteSurvey(repo),
-        getEmailById = GetEmailById(repo)
+        getEmailById = GetEmailById(repo),
+        addUser = AddUser(repo)
     )
 
 

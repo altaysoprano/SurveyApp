@@ -9,6 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.surveyapp.common.Response
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.domain.usecase.UseCases
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -28,9 +31,29 @@ class HomeViewModel @Inject constructor(
     private val _searchSurveyState = mutableStateOf(SearchSurveyState())
     val searchSurveyState = _searchSurveyState
 
-    private fun getSurveys() = viewModelScope.launch {
-        useCases.getSurveys().collect { response ->
-            surveysReference = response as Response<List<Survey>>
+    private lateinit var auth: FirebaseAuth
+
+    init {
+        addUser()
+    }
+
+    fun addUser() = viewModelScope.launch {
+        auth = Firebase.auth
+        val currentUser = auth.currentUser
+        val emailName = currentUser?.email
+
+        useCases.addUser("selam", ).collect { response ->
+            when(response) {
+                is Response.Loading -> {
+                    Log.d("Mesaj: ", "User ekleniyor")
+                }
+                is Response.Success -> {
+                    Log.d("Mesaj: ", "User eklendi")
+                }
+                is Response.Error -> {
+                    Log.d("Mesaj: ", "User eklenemedi!!!")
+                }
+            }
         }
     }
 
