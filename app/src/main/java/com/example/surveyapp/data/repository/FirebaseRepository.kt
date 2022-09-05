@@ -79,7 +79,10 @@ class FirebaseRepository(
                 title = title,
                 options = options
             )
+            usersRef.document(emailName).collection("ownedSurveys").document(id).set(survey).await()
+            Log.d("Mesaj: ", "Anket usera eklendi")
             surveysRef.document(id).set(survey).await()
+            Log.d("Mesaj: ", "Anket surveyse eklendi")
             if (!isOwnVoteChecked) {
                 val email = Email(
                     name = emailName
@@ -92,7 +95,7 @@ class FirebaseRepository(
         }
     }
 
-    suspend fun voteSurvey(emailName: String, id: String, optionId: Int, options: List<Option>) =
+    suspend fun voteSurvey(emailName: String, id: String, optionId: Int, options: List<Option>, surveyTitle: String) =
         flow {
             try {
                 emit(Response.Loading)
@@ -100,11 +103,18 @@ class FirebaseRepository(
                     name = emailName,
                     votedOptionId = optionId
                 )
+                val survey = Survey(
+                    id = id,
+                    title = surveyTitle
+                )
+                usersRef.document(emailName).collection("votedSurveys").document(id).set(survey).await()
+                Log.d("Mesaj: ", "Anket votedSurveysa eklendi")
                 surveysRef.document(id).collection("emails").document(email.name).set(email).await()
+                Log.d("Mesaj: ", "Anket surveyse eklendi")
                 val updatedOptions = options
                 updatedOptions[optionId].numberOfVotes += 1
                 surveysRef.document(id).update(mapOf("options" to updatedOptions)).await()
-                emit(Response.Success(email)) //BURADA DAHA SONRA VERİ GÖNDEREBİLİRSİN
+                emit(Response.Success(email))
             } catch (e: Exception) {
                 emit(Response.Error(e.message ?: e.toString()))
             }
