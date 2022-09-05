@@ -1,5 +1,6 @@
 package com.example.surveyapp.data.repository
 
+import android.util.Log
 import com.example.surveyapp.common.Response
 import com.example.surveyapp.data.firebase.FirebaseAuthLoginSourceProvider
 import com.example.surveyapp.data.models.Email
@@ -38,20 +39,38 @@ class FirebaseRepository(
     }
 */
 
-    suspend fun addUser(email: String) = flow {
+    suspend fun getUser(email: String) = callbackFlow {
         try {
-            emit(Response.Loading)
-            val user = User(
-                email = email
-            )
-            usersRef.document(email).set(user).await()
-            emit(Response.Success(user))
+            trySend(Response.Loading)
+            usersRef.document(email).get()
+                .addOnSuccessListener { document ->
+                    if(document.exists()) {
+                        Log.d("Mesaj: ", "user var")
+                        val user = document.toObject(User::class.java)
+                        trySend(Response.Success(user))
+                    }
+                    else {
+                        Log.d("Mesaj: ", "user yok")
+                        val user = User(
+                            email = email
+                        )
+                        usersRef.document(email).set(user)
+                        Log.d("Mesaj: ", "yeni user oluşturuldu")
+                        trySend(Response.Success(user))
+                    }
+                }
         } catch (e: Exception) {
-            emit(Response.Error(e.message ?: e.toString()))
+            trySend(Response.Error(e.message ?: e.toString()))
         }
+        awaitClose { cancel() }
     }
 
-    suspend fun addSurveyToFirestore(isOwnVoteChecked: Boolean, emailName: String, title: String, options: List<Option>) = flow {
+    suspend fun addSurveyToFirestore(
+        isOwnVoteChecked: Boolean,
+        emailName: String,
+        title: String,
+        options: List<Option>
+    ) = flow {
         try {
             emit(Response.Loading)
             val id = surveysRef.document().id.take(6)
@@ -61,7 +80,7 @@ class FirebaseRepository(
                 options = options
             )
             surveysRef.document(id).set(survey).await()
-            if(!isOwnVoteChecked) {
+            if (!isOwnVoteChecked) {
                 val email = Email(
                     name = emailName
                 )

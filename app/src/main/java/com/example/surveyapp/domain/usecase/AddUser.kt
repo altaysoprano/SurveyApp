@@ -8,5 +8,5 @@ class AddUser(
 
     suspend operator fun invoke(
         email: String
-    ) = repo.addUser(email = email)
+    ) = repo.getUser(email = email)
 }

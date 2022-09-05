@@ -42,16 +42,16 @@ class HomeViewModel @Inject constructor(
         val currentUser = auth.currentUser
         val emailName = currentUser?.email
 
-        useCases.addUser("selam", ).collect { response ->
+        useCases.addUser(emailName ?: "" ).collect { response ->
             when(response) {
                 is Response.Loading -> {
-                    Log.d("Mesaj: ", "User ekleniyor")
+                    Log.d("Mesaj: ", "User bakılıyor")
                 }
                 is Response.Success -> {
-                    Log.d("Mesaj: ", "User eklendi")
+                    Log.d("Mesaj: ", "User işlemi tamamlandı")
                 }
                 is Response.Error -> {
-                    Log.d("Mesaj: ", "User eklenemedi!!!")
+                    Log.d("Mesaj: ", "User işleminde sorun var!!!")
                 }
             }
         }
