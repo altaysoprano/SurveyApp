@@ -63,12 +63,12 @@ class PollDetailViewModel @Inject constructor(
         }
     }
 
-    fun onVote(id: String, optionId: Int, options: List<Option>) = viewModelScope.launch {
+    fun onVote(id: String, optionId: Int, options: List<Option>, surveyTitle: String) = viewModelScope.launch {
         auth = Firebase.auth
         val currentUser = auth.currentUser
         val emailName = currentUser?.email
 
-        useCases.voteSurvey(emailName ?: "", id, optionId, options).collect { response ->
+        useCases.voteSurvey(emailName ?: "", id, optionId, options, surveyTitle).collect { response ->
             when (response) {
                 is Response.Loading -> {
                     _pollDetailState.value = _pollDetailState.value.copy(

@@ -1,5 +1,6 @@
 package com.example.surveyapp.data.repository
 
+import android.content.ContentValues.TAG
 import android.util.Log
 import com.example.surveyapp.common.Response
 import com.example.surveyapp.data.firebase.FirebaseAuthLoginSourceProvider
@@ -22,22 +23,44 @@ class FirebaseRepository(
     private val usersRef: CollectionReference
 ) {
 
-/*
-    fun getSurveysFromFirestore() = callbackFlow {
-        val snapshotListener = surveysRef.orderBy(TITLE).addSnapshotListener { snapshot, e ->
-            val response = if (snapshot != null) {
-                val surveys = snapshot.toObjects(Survey::class.java)
-                Response.Success(surveys) //Burada try-send yapman gerekiyor olabilir
-            } else {
-                Error(e?.message ?: e.toString())
-            }
-            trySend(response).isSuccess
+    /*
+fun getSurveysFromFirestore() = callbackFlow {
+    val snapshotListener = surveysRef.orderBy(TITLE).addSnapshotListener { snapshot, e ->
+        val response = if (snapshot != null) {
+            val surveys = snapshot.toObjects(Survey::class.java)
+            Response.Success(surveys) //Burada try-send yapman gerekiyor olabilir
+        } else {
+            Error(e?.message ?: e.toString())
         }
-        awaitClose {
-            snapshotListener.remove()
-        }
+        trySend(response).isSuccess
     }
+    awaitClose {
+        snapshotListener.remove()
+    }
+}
 */
+
+    suspend fun getSurveys(email: String, collectionName: String) = callbackFlow {
+        try {
+            trySend(Response.Loading)
+            usersRef.document(email).collection(collectionName).get()
+                .addOnSuccessListener { result ->
+                    val surveys = ArrayList<Survey>()
+                    for(document in result) {
+                        val survey = document.toObject(Survey::class.java)
+                        surveys.add(survey)
+                        Log.d(TAG, "${document.id} => ${document.data}")
+                    }
+                    trySend(Response.Success(surveys))
+                }
+                .addOnFailureListener {
+                    trySend(Response.Error("Surveys could not be retrieved"))
+                }
+        } catch (e: Exception) {
+            trySend(Response.Error(e.message ?: e.toString()))
+        }
+        awaitClose { cancel() }
+    }
 
     suspend fun getUser(email: String) = callbackFlow {
         try {
@@ -79,10 +102,8 @@ class FirebaseRepository(
                 title = title,
                 options = options
             )
-            usersRef.document(emailName).collection("ownedSurveys").document(id).set(survey).await()
-            Log.d("Mesaj: ", "Anket usera eklendi")
+            usersRef.document(emailName).collection("ownedSurveys").document(id).set(survey)
             surveysRef.document(id).set(survey).await()
-            Log.d("Mesaj: ", "Anket surveyse eklendi")
             if (!isOwnVoteChecked) {
                 val email = Email(
                     name = emailName
@@ -107,10 +128,8 @@ class FirebaseRepository(
                     id = id,
                     title = surveyTitle
                 )
-                usersRef.document(emailName).collection("votedSurveys").document(id).set(survey).await()
-                Log.d("Mesaj: ", "Anket votedSurveysa eklendi")
+                usersRef.document(emailName).collection("votedSurveys").document(id).set(survey)
                 surveysRef.document(id).collection("emails").document(email.name).set(email).await()
-                Log.d("Mesaj: ", "Anket surveyse eklendi")
                 val updatedOptions = options
                 updatedOptions[optionId].numberOfVotes += 1
                 surveysRef.document(id).update(mapOf("options" to updatedOptions)).await()
@@ -165,5 +184,7 @@ class FirebaseRepository(
 
     suspend fun loginWithCredential(authCredential: AuthCredential) =
         firebaseSocialLoginSourceProvider.loginWithCredential(authCredential)
+
+
 
 }

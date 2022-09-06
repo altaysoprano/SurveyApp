@@ -31,6 +31,9 @@ class HomeViewModel @Inject constructor(
     private val _searchSurveyState = mutableStateOf(SearchSurveyState())
     val searchSurveyState = _searchSurveyState
 
+    private val _surveyListState = mutableStateOf(SurveyListState())
+    val surveyListState = _surveyListState
+
     private lateinit var auth: FirebaseAuth
 
     init {
@@ -45,13 +48,69 @@ class HomeViewModel @Inject constructor(
         useCases.addUser(emailName ?: "" ).collect { response ->
             when(response) {
                 is Response.Loading -> {
-                    Log.d("Mesaj: ", "User bakılıyor")
+                    Log.d("Mesaj: ", "User bakılıyor") //Buraya ayrıca bir loading statei sağlanabilir
                 }
                 is Response.Success -> {
-                    Log.d("Mesaj: ", "User işlemi tamamlandı")
+                    getOwnedSurveys(emailName ?: "")
+                    getVotedSurveys(emailName ?: "")
                 }
                 is Response.Error -> {
                     Log.d("Mesaj: ", "User işleminde sorun var!!!")
+                }
+            }
+        }
+    }
+
+    fun getVotedSurveys(emailName: String) = viewModelScope.launch {
+        useCases.getSurveys(emailName ?: "", "votedSurveys").collect { response ->
+            Log.d("Mesaj: ", "voted başladı")
+            when(response) {
+                is Response.Loading -> {
+                    Log.d("Mesaj: ", "Voted Anketler yükleniyor")
+                    _surveyListState.value = _surveyListState.value.copy(
+                        isVotedSurveysLoading = true
+                    )
+                }
+                is Response.Success -> {
+                    Log.d("Mesaj: ", "Voted Anketler yüklendi")
+                    _surveyListState.value = _surveyListState.value.copy(
+                        isVotedSurveysLoading = false,
+                        votedSurveysData = response.data
+                    )
+                }
+                is Response.Error -> {
+                    Log.d("Mesaj: ", "Voted Anket yüklemesinde sorun oluştu")
+                    _surveyListState.value = _surveyListState.value.copy(
+                        isVotedSurveysLoading = false,
+                        votedSurveysError = response.message
+                    )
+                }
+            }
+        }
+    }
+
+    fun getOwnedSurveys(emailName: String) = viewModelScope.launch {
+        useCases.getSurveys(emailName ?: "", "ownedSurveys").collect { response ->
+            when(response) {
+                is Response.Loading -> {
+                    Log.d("Mesaj: ", "Owned Anketler yükleniyor")
+                    _surveyListState.value = _surveyListState.value.copy(
+                        isOwnedSurveysLoading = true
+                    )
+                }
+                is Response.Success -> {
+                    Log.d("Mesaj: ", "Owned Anketler yüklendi")
+                    _surveyListState.value = _surveyListState.value.copy(
+                        isOwnedSurveysLoading = false,
+                        ownedSurveysData = response.data
+                    )
+                }
+                is Response.Error -> {
+                    Log.d("Mesaj: ", "Owned Anket yüklemesinde sorun oluştu")
+                    _surveyListState.value = _surveyListState.value.copy(
+                        isOwnedSurveysLoading = false,
+                        ownedSurveysError = response.message
+                    )
                 }
             }
         }

@@ -59,7 +59,8 @@ fun PollDetailScreen(
                                 viewModel.onVote(
                                     options = survey.options,
                                     optionId = optionId,
-                                    id = id
+                                    id = id,
+                                    surveyTitle = survey.title
                                 )
                             }
                         }
