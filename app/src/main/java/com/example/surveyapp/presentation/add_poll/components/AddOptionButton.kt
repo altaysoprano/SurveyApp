@@ -27,7 +27,7 @@ fun AddOptionButton(
             disabledElevation = 0.dp
         ),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = MaterialTheme.colors.background
+            backgroundColor = MaterialTheme.colors.primary
         ),
         shape = CircleShape,
     ) {

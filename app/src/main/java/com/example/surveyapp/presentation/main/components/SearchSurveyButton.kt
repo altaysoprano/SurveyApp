@@ -22,7 +22,7 @@ fun SearchSurveyButton(
             pressedElevation = 15.dp,
             disabledElevation = 0.dp
         ),
-        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.background)
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
     ) {
         Text(text = "Search Survey", modifier = Modifier.padding(4.dp))
     }

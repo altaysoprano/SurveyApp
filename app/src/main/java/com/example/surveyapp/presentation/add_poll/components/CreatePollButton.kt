@@ -31,7 +31,7 @@ fun CreatePollButton(
         ),
         colors = ButtonDefaults.buttonColors(
             disabledBackgroundColor = Color.LightGray,
-            backgroundColor = MaterialTheme.colors.background
+            backgroundColor = MaterialTheme.colors.primary
         ),
         enabled = isButtonEnabled
     ) {

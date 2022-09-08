@@ -45,7 +45,6 @@ fun SearchSurveyTextfield(
         )
     }
     Spacer(modifier = Modifier.height(8.dp))
-    Log.d("Mesaj: ", "butondaki text.value: ${text.value}")
     SearchSurveyButton {
         viewModel.onSearchSurvey(text.value)
     }

@@ -54,7 +54,7 @@ fun CreatePollScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        backgroundColor = MaterialTheme.colors.primary
+        backgroundColor = MaterialTheme.colors.background
     ) {
         CreatePollAlertDialog(
             createPollState.value.dialogState,

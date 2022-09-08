@@ -20,6 +20,7 @@ import com.example.surveyapp.presentation.login.LoginViewModel
 import com.example.surveyapp.presentation.main.components.SearchSurveyTextfield
 import com.example.surveyapp.presentation.main.components.SurveyCard
 import com.example.surveyapp.presentation.main.components.SurveyListCard
+import com.example.surveyapp.ui.theme.Blue300
 import com.google.gson.Gson
 
 @Composable
@@ -66,10 +67,10 @@ fun MainScreen(
                         contentDescription = "Create A Poll"
                     )
                 },
-                text = { Text("Create A Survey") }
+                text = { Text("Create A Survey") },
+                backgroundColor = MaterialTheme.colors.primary
             )
         },
-        backgroundColor = MaterialTheme.colors.primary
     )
     {
         Column(
@@ -88,19 +89,25 @@ fun MainScreen(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(searchSurveyState.value.error, color = MaterialTheme.colors.error)
             }
-            Spacer(modifier = Modifier.height(24.dp))
-            SurveyListCard(
-                isSurveyListEmpty = surveyListState.value.ownedSurveysData.isEmpty(),
-                isLoading = surveyListState.value.isOwnedSurveysLoading,
-                title = "My Surveys",
-                size = 0.35f
-            )
-            SurveyListCard(
-                isSurveyListEmpty = surveyListState.value.votedSurveysData.isEmpty(),
-                isLoading = surveyListState.value.isVotedSurveysLoading,
-                title = "Surveys I've Voted",
-                size = 0.7f
-            )
+            Card(shape = MaterialTheme.shapes.large, elevation = 12.dp,
+                backgroundColor = MaterialTheme.colors.background, modifier = Modifier.padding(vertical = 20.dp)) {
+                Column() {
+                    SurveyListCard(
+                        isLoading = surveyListState.value.isOwnedSurveysLoading,
+                        surveyList = surveyListState.value.ownedSurveysData,
+                        title = "My Surveys",
+                        size = 0.47f,
+                        listSize = 3
+                    )
+                    SurveyListCard(
+                        isLoading = surveyListState.value.isVotedSurveysLoading,
+                        surveyList = surveyListState.value.votedSurveysData,
+                        title = "Surveys I've Voted",
+                        size = 0.68f,
+                        listSize = 2
+                    )
+                }
+            }
         }
         if (searchSurveyState.value.isLoading) {
             Box(
