@@ -98,14 +98,18 @@ fun MainScreen(
                         title = "My Surveys",
                         size = 0.47f,
                         listSize = 3
-                    )
+                    ) { id ->
+                        homeViewModel.getSurveyById(id)
+                    }
                     SurveyListCard(
                         isLoading = surveyListState.value.isVotedSurveysLoading,
                         surveyList = surveyListState.value.votedSurveysData,
                         title = "Surveys I've Voted",
                         size = 0.68f,
                         listSize = 2
-                    )
+                    ) { id ->
+                        homeViewModel.getSurveyById(id)
+                    }
                 }
             }
         }

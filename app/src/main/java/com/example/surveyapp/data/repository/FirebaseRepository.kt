@@ -2,6 +2,7 @@ package com.example.surveyapp.data.repository
 
 import android.content.ContentValues.TAG
 import android.util.Log
+import com.example.surveyapp.common.Constants.ADDED_DATE
 import com.example.surveyapp.common.Response
 import com.example.surveyapp.data.firebase.FirebaseAuthLoginSourceProvider
 import com.example.surveyapp.data.models.Email
@@ -10,6 +11,7 @@ import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.data.models.User
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -43,7 +45,7 @@ fun getSurveysFromFirestore() = callbackFlow {
     suspend fun getSurveys(email: String, collectionName: String) = callbackFlow {
         try {
             trySend(Response.Loading)
-            usersRef.document(email).collection(collectionName).get()
+            usersRef.document(email).collection(collectionName).orderBy(ADDED_DATE, Query.Direction.DESCENDING).get()
                 .addOnSuccessListener { result ->
                     val surveys = ArrayList<Survey>()
                     for(document in result) {

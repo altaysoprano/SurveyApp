@@ -154,7 +154,6 @@ fun CreatePollScreen(
                                             .clickable { viewModel.deleteOption(option) },
                                         imageVector = Icons.Default.Delete,
                                         contentDescription = "Delete Option",
-                                        tint = MaterialTheme.colors.background
                                     )
                                 }
                             }

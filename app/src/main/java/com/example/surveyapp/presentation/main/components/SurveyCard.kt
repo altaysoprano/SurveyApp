@@ -30,6 +30,7 @@ import com.example.surveyapp.ui.theme.Blue300
 @Composable
 fun SurveyCard(
     survey: Survey,
+    onClick: (String) -> Unit
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
 
@@ -37,13 +38,24 @@ fun SurveyCard(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
             .padding(4.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { onClick(survey.id ?: "") },
         elevation = 8.dp,
         backgroundColor = MaterialTheme.colors.background
     ) {
-        Row(modifier = Modifier.fillMaxWidth().padding(4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Column(modifier = Modifier.fillMaxWidth(0.9f)) {
-                Text(survey.title, fontWeight = FontWeight.Bold, overflow = TextOverflow.Ellipsis, maxLines = 1)
+                Text(
+                    survey.title,
+                    fontWeight = FontWeight.Bold,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
+                )
                 Spacer(modifier = Modifier.height(4.dp))
                 Row() {
                     Text(survey.id ?: "", fontWeight = FontWeight.Bold, color = Color.LightGray)
@@ -51,14 +63,24 @@ fun SurveyCard(
                     Icon(
                         painter = painterResource(R.drawable.ic_copy_24),
                         contentDescription = "print",
-                        modifier = Modifier.clickable {
-                            clipboardManager.setText(AnnotatedString((survey.id ?: "")))
-                        }.size(20.dp)
+                        modifier = Modifier
+                            .clickable {
+                                clipboardManager.setText(AnnotatedString((survey.id ?: "")))
+                            }
+                            .size(20.dp)
                     )
                 }
             }
-            Box(modifier = Modifier.align(CenterVertically).fillMaxWidth(), contentAlignment = CenterEnd) {
-                Icon(painter = painterResource(id = R.drawable.ic_right_24), contentDescription = "Right Arrow")
+            Box(
+                modifier = Modifier
+                    .align(CenterVertically)
+                    .fillMaxWidth(),
+                contentAlignment = CenterEnd
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_right_24),
+                    contentDescription = "Right Arrow"
+                )
             }
         }
     }

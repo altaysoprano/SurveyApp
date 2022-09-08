@@ -14,15 +14,4 @@ fun SurveysContent(
     padding: PaddingValues,
     surveys: List<Survey>
 ) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(padding)
-    ) {
-        items(
-            items = surveys
-        ) { survey ->
-            SurveyCard(
-                survey = survey,
-            )
-        }
-    }
 }

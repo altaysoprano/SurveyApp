@@ -22,7 +22,8 @@ fun SurveyListCard(
     title: String,
     size: Float,
     surveyList: List<Survey>,
-    listSize: Int
+    listSize: Int,
+    onItemClick: (String) -> Unit
 ) {
 
     Card(
@@ -82,8 +83,10 @@ fun SurveyListCard(
                         items = surveyList.take(listSize)
                     ) { survey ->
                         SurveyCard(
-                            survey = survey,
-                        )
+                            survey = survey
+                        ) { id ->
+                            onItemClick(id)
+                        }
                     }
                 }
             }
