@@ -1,4 +1,4 @@
-package com.example.surveyapp.presentation.main.components
+package com.example.surveyapp.presentation.all_surveys.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,16 +15,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.surveyapp.R
 import com.example.surveyapp.data.models.Survey
-import com.example.surveyapp.ui.theme.Blue300
+import com.example.surveyapp.presentation.main.components.SurveyCard
 
 @Composable
-fun SurveyListCard(
+fun AllSurveysCard(
     isLoading: Boolean,
     title: String,
     size: Float,
     surveyList: List<Survey>,
     listSize: Int,
-    onSeeAllClick: () -> Unit,
     onItemClick: (String) -> Unit,
 ) {
 
@@ -48,14 +47,6 @@ fun SurveyListCard(
                     text = title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
-                    color = MaterialTheme.colors.primary
-                )
-                Text(
-                    modifier = Modifier.padding(8.dp).clickable {onSeeAllClick()},
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    text = "See All >",
-                    textDecoration = TextDecoration.Underline,
                     color = MaterialTheme.colors.primary
                 )
             }
@@ -94,4 +85,5 @@ fun SurveyListCard(
             }
         }
     }
+    //burada if (data != null) { lazycolumn... }
 }

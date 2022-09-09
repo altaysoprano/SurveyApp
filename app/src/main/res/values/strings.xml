@@ -6,5 +6,6 @@
     <string name="welcome">Hoşgeldiniz!</string>
     <string name="main_screen">main_screen</string>
     <string name="create_poll_screen">create_poll_screen</string>
+    <string name="all_surveys_screen">all_surveys_screen</string>
     <string name="default_web_client_id_X">453654790116-4ivp7v7bn2h3v8uu3sdbh8tc6oq5sn3p.apps.googleusercontent.com</string>
 </resources>

@@ -22,9 +22,6 @@ class HomeViewModel @Inject constructor(
     private val useCases: UseCases
 ) : ViewModel() {
 
-    var surveysReference by mutableStateOf<Response<List<Survey>>>(Response.Loading)
-        private set
-
     private val _surveySearchText = mutableStateOf("")
     val surveySearchText = _surveySearchText
 

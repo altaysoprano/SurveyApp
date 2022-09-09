@@ -97,7 +97,8 @@ fun MainScreen(
                         surveyList = surveyListState.value.ownedSurveysData,
                         title = "My Surveys",
                         size = 0.47f,
-                        listSize = 3
+                        listSize = 3,
+                        onSeeAllClick = { navController.navigate(context.getString(R.string.all_surveys_screen))}
                     ) { id ->
                         homeViewModel.getSurveyById(id)
                     }
@@ -106,7 +107,8 @@ fun MainScreen(
                         surveyList = surveyListState.value.votedSurveysData,
                         title = "Surveys I've Voted",
                         size = 0.68f,
-                        listSize = 2
+                        listSize = 2,
+                        onSeeAllClick = { navController.navigate(context.getString(R.string.all_surveys_screen))}
                     ) { id ->
                         homeViewModel.getSurveyById(id)
                     }

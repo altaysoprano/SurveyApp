@@ -15,6 +15,7 @@ import androidx.navigation.navArgument
 import com.example.surveyapp.common.SurveyType
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.presentation.CreatePollScreen
+import com.example.surveyapp.presentation.all_surveys.AllSurveysScreen
 import com.example.surveyapp.presentation.login.LoginScreen
 import com.example.surveyapp.presentation.main.MainScreen
 import com.example.surveyapp.presentation.poll_details.PollDetailScreen
@@ -63,6 +64,9 @@ fun Navigation(){
             )
         ) { entry ->
             PollDetailScreen(survey = entry.arguments?.getParcelable<Survey>("survey"))
+        }
+        composable(context.getString(R.string.all_surveys_screen)) {
+            AllSurveysScreen(navController = navController)
         }
     }
 }
