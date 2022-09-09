@@ -40,18 +40,21 @@ class MainActivity : ComponentActivity() {
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
-fun Navigation(){
-    val context= LocalContext.current
+fun Navigation() {
+    val context = LocalContext.current
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = context.getString(R.string.main_screen)){
+    NavHost(
+        navController = navController,
+        startDestination = context.getString(R.string.main_screen)
+    ) {
         composable(context.getString(R.string.login_screen)) {
             LoginScreen(navController = navController)
         }
-        composable(context.getString(R.string.main_screen)){
+        composable(context.getString(R.string.main_screen)) {
             MainScreen(navController = navController)
         }
-        composable(context.getString(R.string.create_poll_screen)){
+        composable(context.getString(R.string.create_poll_screen)) {
             CreatePollScreen(navController = navController)
         }
         // NavHost(startDestination = "profile/{userId}") {
@@ -65,8 +68,18 @@ fun Navigation(){
         ) { entry ->
             PollDetailScreen(survey = entry.arguments?.getParcelable<Survey>("survey"))
         }
-        composable(context.getString(R.string.all_surveys_screen)) {
-            AllSurveysScreen(navController = navController)
+        composable(
+            route = "${context.getString(R.string.all_surveys_screen)}/{collectionName}",
+            arguments = listOf(
+                navArgument("collectionName") {
+                    type = NavType.StringType
+                }
+            )
+        ) { entry ->
+            AllSurveysScreen(
+                navController = navController,
+                collectionName = entry.arguments?.getString("collectionName") ?: ""
+            )
         }
     }
 }

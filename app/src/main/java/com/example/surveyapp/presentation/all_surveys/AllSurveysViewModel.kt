@@ -2,9 +2,11 @@ package com.example.surveyapp.presentation.all_surveys
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.surveyapp.common.Response
+import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.domain.usecase.UseCases
 import com.example.surveyapp.presentation.main.SearchSurveyState
 import com.example.surveyapp.presentation.main.SurveyListState
@@ -17,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AllSurveysViewModel @Inject constructor(
-    private val useCases: UseCases
+    private val useCases: UseCases,
+    savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
     private val _allSurveysState = mutableStateOf(AllSurveysState())
@@ -29,16 +32,17 @@ class AllSurveysViewModel @Inject constructor(
     private lateinit var auth: FirebaseAuth
 
     init {
-        getOwnedSurveys()
+        val collectionName = savedStateHandle.get<String>("collectionName")
+        getOwnedSurveys(collectionName ?: "")
     }
 
-    fun getOwnedSurveys() = viewModelScope.launch {
+    fun getOwnedSurveys(collectionName: String) = viewModelScope.launch {
 
         auth = Firebase.auth
         val currentUser = auth.currentUser
         val emailName = currentUser?.email
 
-        useCases.getSurveys(emailName ?: "", "ownedSurveys").collect { response ->
+        useCases.getSurveys(emailName ?: "", collectionName).collect { response ->
             when(response) {
                 is Response.Loading -> {
                     _allSurveysState.value = _allSurveysState.value.copy(

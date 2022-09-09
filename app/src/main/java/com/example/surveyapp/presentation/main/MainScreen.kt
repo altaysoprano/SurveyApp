@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.surveyapp.R
+import com.example.surveyapp.common.Constants.OWNED_SURVEYS
+import com.example.surveyapp.common.Constants.VOTED_SURVEYS
 import com.example.surveyapp.presentation.login.LoginViewModel
 import com.example.surveyapp.presentation.main.components.SearchSurveyTextfield
 import com.example.surveyapp.presentation.main.components.SurveyCard
@@ -98,7 +100,9 @@ fun MainScreen(
                         title = "My Surveys",
                         size = 0.47f,
                         listSize = 3,
-                        onSeeAllClick = { navController.navigate(context.getString(R.string.all_surveys_screen))}
+                        onSeeAllClick = {
+                            navController.navigate("${context.getString(R.string.all_surveys_screen)}/$OWNED_SURVEYS")
+                        }
                     ) { id ->
                         homeViewModel.getSurveyById(id)
                     }
@@ -108,7 +112,9 @@ fun MainScreen(
                         title = "Surveys I've Voted",
                         size = 0.68f,
                         listSize = 2,
-                        onSeeAllClick = { navController.navigate(context.getString(R.string.all_surveys_screen))}
+                        onSeeAllClick = {
+                            navController.navigate("${context.getString(R.string.all_surveys_screen)}/$VOTED_SURVEYS")
+                        }
                     ) { id ->
                         homeViewModel.getSurveyById(id)
                     }

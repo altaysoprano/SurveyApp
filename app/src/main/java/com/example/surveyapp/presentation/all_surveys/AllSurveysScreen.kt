@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import com.example.surveyapp.R
 import com.example.surveyapp.presentation.all_surveys.components.AllSurveysCard
@@ -25,7 +26,8 @@ import com.google.gson.Gson
 @Composable
 fun AllSurveysScreen(
     allSurveysViewModel: AllSurveysViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    collectionName: String
 ) {
 
     val allSurveysState = allSurveysViewModel.allSurveysState
@@ -47,7 +49,7 @@ fun AllSurveysScreen(
     ) {
         AllSurveysCard(
             isLoading = allSurveysState.value.isLoading,
-            title = "My Surveys",
+            title = "Surveys",
             size = 1f,
             surveyList = allSurveysState.value.data,
             listSize = allSurveysState.value.data.size
