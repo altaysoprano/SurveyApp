@@ -82,7 +82,7 @@ fun SurveyListCard(
                         .padding(8.dp)
                 ) {
                     items(
-                        items = surveyList.take(listSize)
+                        items = surveyList
                     ) { survey ->
                         SurveyCard(
                             survey = survey

@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -12,8 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
@@ -47,23 +51,38 @@ fun AllSurveysScreen(
         modifier = Modifier.fillMaxSize(),
         backgroundColor = MaterialTheme.colors.background
     ) {
-        AllSurveysCard(
-            isLoading = allSurveysState.value.isLoading,
-            title = "Surveys",
-            size = 1f,
-            surveyList = allSurveysState.value.data,
-            listSize = allSurveysState.value.data.size
-        ) { id ->
-            allSurveysViewModel.getSurveyById(id)
-        }
-        if (searchSurveyState.value.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Color.LightGray.copy(alpha = 0.5f)),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
+        Box(modifier = Modifier.fillMaxSize()) {
+            AllSurveysCard(
+                isLoading = allSurveysState.value.isLoading,
+                title = "Surveys",
+                size = 1f,
+                surveyList = allSurveysState.value.data,
+                listSize = allSurveysState.value.data.size,
+                limit = allSurveysState.value.limit,
+                { allSurveysViewModel.onPaginate() }
+            ) { id ->
+                allSurveysViewModel.getSurveyById(id)
+            }
+            if (searchSurveyState.value.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = Color.LightGray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            if(allSurveysState.value.isPaginating) {
+                Box(contentAlignment = Alignment.BottomCenter,
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                        .alpha(0.5f)
+                        .height(50.dp)
+                        .fillMaxWidth()
+                ) {
+                    CircularProgressIndicator()
+                }
             }
         }
     }

@@ -6,10 +6,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.surveyapp.common.Response
-import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.domain.usecase.UseCases
 import com.example.surveyapp.presentation.main.SearchSurveyState
-import com.example.surveyapp.presentation.main.SurveyListState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -31,18 +29,21 @@ class AllSurveysViewModel @Inject constructor(
 
     private lateinit var auth: FirebaseAuth
 
+    private var collectionName = savedStateHandle.get<String>("collectionName")
+
     init {
-        val collectionName = savedStateHandle.get<String>("collectionName")
-        getOwnedSurveys(collectionName ?: "")
+        collectionName = savedStateHandle.get<String>("collectionName")
+        getSurveys(collectionName ?: "")
     }
 
-    fun getOwnedSurveys(collectionName: String) = viewModelScope.launch {
+    fun getSurveys(collectionName: String) = viewModelScope.launch {
 
         auth = Firebase.auth
         val currentUser = auth.currentUser
         val emailName = currentUser?.email
+        val limit = _allSurveysState.value.limit
 
-        useCases.getSurveys(emailName ?: "", collectionName).collect { response ->
+        useCases.getSurveys(emailName ?: "", collectionName, limit).collect { response ->
             when(response) {
                 is Response.Loading -> {
                     _allSurveysState.value = _allSurveysState.value.copy(
@@ -104,5 +105,37 @@ class AllSurveysViewModel @Inject constructor(
         _searchSurveyState.value = _searchSurveyState.value.copy(
             data = null
         )
+    }
+
+    fun onPaginate() = viewModelScope.launch {
+        _allSurveysState.value = _allSurveysState.value.copy(
+            limit = _allSurveysState.value.limit + 10
+        )
+        auth = Firebase.auth
+        val currentUser = auth.currentUser
+        val emailName = currentUser?.email
+        val limit = _allSurveysState.value.limit
+
+        useCases.getSurveys(emailName ?: "", collectionName ?: "", limit).collect { response ->
+            when(response) {
+                is Response.Loading -> {
+                    _allSurveysState.value = _allSurveysState.value.copy(
+                        isPaginating = true
+                    )
+                }
+                is Response.Success -> {
+                    _allSurveysState.value = _allSurveysState.value.copy(
+                        isPaginating = false,
+                        data = response.data
+                    )
+                }
+                is Response.Error -> {
+                    _allSurveysState.value = _allSurveysState.value.copy(
+                        isPaginating = false,
+                        error = response.message //BURADA DA BİR HATA MESAJI OLABİLİR. SURVEYLER İLK BAŞTA YÜKLENİP SONRA İNTERNETİ KAPATIP BAK
+                    )
+                }
+            }
+        }
     }
 }

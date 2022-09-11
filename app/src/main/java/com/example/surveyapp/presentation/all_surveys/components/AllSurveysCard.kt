@@ -1,13 +1,17 @@
 package com.example.surveyapp.presentation.all_surveys.components
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -24,6 +28,8 @@ fun AllSurveysCard(
     size: Float,
     surveyList: List<Survey>,
     listSize: Int,
+    limit: Long,
+    onPaginate: () -> Unit,
     onItemClick: (String) -> Unit,
 ) {
 
@@ -67,10 +73,13 @@ fun AllSurveysCard(
                     }
                 }
             } else {
+                val state = rememberLazyListState()
+
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(8.dp)
+                        .padding(8.dp),
+                    state = state
                 ) {
                     items(
                         items = surveyList.take(listSize)
@@ -82,8 +91,12 @@ fun AllSurveysCard(
                         }
                     }
                 }
+                val lastVisibleItemIndex = state.layoutInfo.visibleItemsInfo.lastIndex + state.firstVisibleItemIndex
+
+                if (lastVisibleItemIndex.toLong() > limit - 2) {
+                    onPaginate()
+                }
             }
         }
     }
-    //burada if (data != null) { lazycolumn... }
 }

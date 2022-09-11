@@ -59,7 +59,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getVotedSurveys(emailName: String) = viewModelScope.launch {
-        useCases.getSurveys(emailName ?: "", "votedSurveys").collect { response ->
+        useCases.getSurveys(emailName ?: "", "votedSurveys", 2).collect { response ->
             Log.d("Mesaj: ", "voted başladı")
             when(response) {
                 is Response.Loading -> {
@@ -87,7 +87,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getOwnedSurveys(emailName: String) = viewModelScope.launch {
-        useCases.getSurveys(emailName ?: "", "ownedSurveys").collect { response ->
+        useCases.getSurveys(emailName ?: "", "ownedSurveys", 3).collect { response ->
             when(response) {
                 is Response.Loading -> {
                     Log.d("Mesaj: ", "Owned Anketler yükleniyor")
@@ -121,7 +121,7 @@ class HomeViewModel @Inject constructor(
                 isTextBlank = true
             )
         } else {
-            useCases.getSurveyById(id).collect { response ->
+            useCases.getSurveyById(id.trim()).collect { response ->
                 when (response) {
                     is Response.Loading -> {
                         _searchSurveyState.value = _searchSurveyState.value.copy(

@@ -42,10 +42,10 @@ fun getSurveysFromFirestore() = callbackFlow {
 }
 */
 
-    suspend fun getSurveys(email: String, collectionName: String) = callbackFlow {
+    suspend fun getSurveys(email: String, collectionName: String, limit: Long) = callbackFlow {
         try {
             trySend(Response.Loading)
-            usersRef.document(email).collection(collectionName).orderBy(ADDED_DATE, Query.Direction.DESCENDING).get()
+            usersRef.document(email).collection(collectionName).orderBy(ADDED_DATE, Query.Direction.DESCENDING).limit(limit).get()
                 .addOnSuccessListener { result ->
                     val surveys = ArrayList<Survey>()
                     for(document in result) {
