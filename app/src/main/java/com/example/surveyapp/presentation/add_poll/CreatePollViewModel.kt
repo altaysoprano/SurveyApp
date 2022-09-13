@@ -107,4 +107,24 @@ class CreatePollViewModel @Inject constructor(
             isAdded = true
         )
     }
+
+    fun onSetTimeButtonPressed() {
+        _createPollState.value = _createPollState.value.copy(
+            setTimeDialogState = true
+        )
+    }
+
+    fun onSetTimeDialogDismiss() {
+        _createPollState.value = _createPollState.value.copy(
+            setTimeDialogState = false
+        )
+    }
+
+    fun onSetTimeDialogConfirm(day: Int, hour: Int, minute: Int) {
+        val surveyTime = SurveyTime(day, hour, minute)
+        _createPollState.value = _createPollState.value.copy(
+            surveyTime = surveyTime,
+            setTimeDialogState = false
+        )
+    }
 }

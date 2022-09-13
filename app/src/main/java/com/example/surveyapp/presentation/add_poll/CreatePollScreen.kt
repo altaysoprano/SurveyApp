@@ -1,6 +1,5 @@
 package com.example.surveyapp.presentation
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,9 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.surveyapp.R
 import com.example.surveyapp.presentation.add_poll.CreatePollViewModel
-import com.example.surveyapp.presentation.add_poll.components.AddOptionButton
-import com.example.surveyapp.presentation.add_poll.components.CreatePollAlertDialog
-import com.example.surveyapp.presentation.add_poll.components.CreatePollButton
+import com.example.surveyapp.presentation.add_poll.components.*
 import com.example.surveyapp.presentation.main.components.OutlinedTextFieldBackground
 
 @ExperimentalFoundationApi
@@ -61,6 +58,12 @@ fun CreatePollScreen(
             createPollState.value.data?.id ?: ""
         ) {
             viewModel.onAlertDialogDismiss()
+        }
+        SetTimeDialog(dialogState = createPollState.value.setTimeDialogState,
+            onConfirm = { day, hour, minute ->
+                viewModel.onSetTimeDialogConfirm(day, hour, minute)
+            }) {
+            viewModel.onSetTimeDialogDismiss()
         }
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -171,6 +174,14 @@ fun CreatePollScreen(
                                 )
                             }
                             Spacer(modifier = Modifier.height(8.dp))
+                            SetTimeButton(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .padding(vertical = 4.dp),
+                                surveyTime = createPollState.value.surveyTime
+                            ) {
+                                viewModel.onSetTimeButtonPressed()
+                            }
                         }
                     }
                 }
@@ -194,14 +205,15 @@ fun CreatePollScreen(
             }
             Column(modifier = Modifier.align(Alignment.BottomCenter)) {
                 val isChecked = createPollState.value.isCheckBoxChecked
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .alpha(if (isChecked) 1f else 0.5f)
-                    .clickable { viewModel.onCheckBoxChanged(!isChecked) },
-                    horizontalArrangement = Arrangement.Center) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(if (isChecked) 1f else 0.5f)
+                        .clickable { viewModel.onCheckBoxChanged(!isChecked) },
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text("I want to vote in this survey", fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.width(16.dp))
                     Checkbox(
                         checked = isChecked,
                         onCheckedChange = { viewModel.onCheckBoxChanged(it) },

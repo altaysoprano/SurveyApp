@@ -11,5 +11,7 @@ data class CreatePollState(
     val error: String = "",
     val isAdded: Boolean = false,
     val dialogState: Boolean = false,
-    val isCheckBoxChecked: Boolean = false
+    val isCheckBoxChecked: Boolean = false,
+    val setTimeDialogState: Boolean = false,
+    val surveyTime: SurveyTime = SurveyTime(1, 0, 0)
 )
