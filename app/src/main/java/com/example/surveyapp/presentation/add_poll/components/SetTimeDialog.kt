@@ -57,7 +57,7 @@ fun SetTimeDialog(dialogState: Boolean, onConfirm: (Int, Int, Int) -> Unit, onDi
                         NumberPicker(
                             value = dayValue, onValueChange = {
                                 dayValue = it
-                                if (dayValue == 0 && hourValue == 0) minuteValue = 1
+                                if (dayValue == 0 && hourValue == 0 && minuteValue == 0) minuteValue = 1
                             },
                             range = 0..7, textStyle = TextStyle(fontSize = 20.sp)
                         )
@@ -70,7 +70,7 @@ fun SetTimeDialog(dialogState: Boolean, onConfirm: (Int, Int, Int) -> Unit, onDi
                         NumberPicker(
                             value = hourValue, onValueChange = {
                                 hourValue = it
-                                if (dayValue == 0 && hourValue == 0) minuteValue = 1
+                                if (dayValue == 0 && hourValue == 0 && minuteValue == 0) minuteValue = 1
                             },
                             range = 0..23, textStyle = TextStyle(fontSize = 20.sp)
                         )

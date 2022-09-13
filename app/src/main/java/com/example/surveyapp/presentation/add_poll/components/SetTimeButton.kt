@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.surveyapp.R
 import com.example.surveyapp.presentation.add_poll.SurveyTime
 
@@ -47,19 +48,9 @@ fun SetTimeButton(modifier: Modifier, surveyTime: SurveyTime, onClick: () -> Uni
             Text(
                 text = "${surveyTime.day}d ${surveyTime.hour}h ${surveyTime.minute}m",
                 fontWeight = Bold,
+                fontSize = 20.sp,
                 color = MaterialTheme.colors.primary
             )
         }
     }
 }
-
-/*
-Text(
-text =
-if (surveyTime.day == 0 && surveyTime.hour == 0) "${surveyTime.minute}m"
-else if (surveyTime.day == 0) "${surveyTime.hour}h, ${surveyTime.minute}m"
-else "${surveyTime.day}d, ${surveyTime.hour}h, ${surveyTime.minute}m",
-fontWeight = Bold,
-color = MaterialTheme.colors.primary
-)
-*/
