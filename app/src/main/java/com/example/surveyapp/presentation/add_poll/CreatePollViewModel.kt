@@ -1,6 +1,8 @@
 package com.example.surveyapp.presentation.add_poll
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -15,6 +17,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,6 +37,7 @@ class CreatePollViewModel @Inject constructor(
             auth = Firebase.auth
             val currentUser = auth.currentUser
             val emailName = currentUser?.email
+            // val surveyTime =
 
             useCases.addSurvey(emailName ?: "", isOwnVoteChecked, title, options).collect { response ->
                 when (response) {
@@ -126,5 +131,15 @@ class CreatePollViewModel @Inject constructor(
             surveyTime = surveyTime,
             setTimeDialogState = false
         )
+        Log.d("Mesaj: ", getDeadLine(createPollState.value.surveyTime).toString())
+    }
+
+    fun getDeadLine(surveyTime: SurveyTime): Date {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DATE, surveyTime.day)
+        calendar.add(Calendar.HOUR, surveyTime.hour)
+        calendar.add(Calendar.MINUTE, surveyTime.minute)
+        val deadline = calendar.time
+        return deadline
     }
 }

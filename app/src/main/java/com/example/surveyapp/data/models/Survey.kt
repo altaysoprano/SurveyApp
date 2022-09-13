@@ -1,6 +1,7 @@
 package com.example.surveyapp.data.models
 
 import android.os.Parcelable
+import com.example.surveyapp.presentation.add_poll.SurveyTime
 import com.google.firebase.firestore.ServerTimestamp
 import kotlinx.parcelize.Parcelize
 import java.util.*
@@ -11,5 +12,6 @@ data class Survey(
     val title: String = "",
     val options: List<Option> = listOf(),
     @ServerTimestamp
-    var surveyAddedTimestamp: Date? = null
-    ) : Parcelable
+    var surveyAddedTimestamp: Date? = null,
+    val duration: SurveyTime? = null
+) : Parcelable
