@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.surveyapp.data.models.Survey
+import java.util.*
 
 @ExperimentalFoundationApi
 @Composable
@@ -60,7 +61,8 @@ fun PollDetailScreen(
                                     options = survey.options,
                                     optionId = optionId,
                                     id = id,
-                                    surveyTitle = survey.title
+                                    surveyTitle = survey.title,
+                                    deadline = survey.deadline ?: Date()
                                 )
                             }
                         }

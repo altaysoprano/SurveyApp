@@ -31,16 +31,17 @@ class HomeViewModel @Inject constructor(
     private val _surveyListState = mutableStateOf(SurveyListState())
     val surveyListState = _surveyListState
 
-    private lateinit var auth: FirebaseAuth
+    private var auth: FirebaseAuth = Firebase.auth
+    val currentUser = auth.currentUser
+    val emailName = currentUser?.email
 
     init {
         addUser()
+        getOwnedSurveys(emailName ?: "")
+        getVotedSurveys(emailName ?: "")
     }
 
     fun addUser() = viewModelScope.launch {
-        auth = Firebase.auth
-        val currentUser = auth.currentUser
-        val emailName = currentUser?.email
 
         useCases.addUser(emailName ?: "" ).collect { response ->
             when(response) {
@@ -48,8 +49,7 @@ class HomeViewModel @Inject constructor(
                     Log.d("Mesaj: ", "User bakılıyor") //Buraya ayrıca bir loading statei sağlanabilir
                 }
                 is Response.Success -> {
-                    getOwnedSurveys(emailName ?: "")
-                    getVotedSurveys(emailName ?: "")
+                    Log.d("Mesaj: ", "User bulundu")
                 }
                 is Response.Error -> {
                     Log.d("Mesaj: ", "User işleminde sorun var!!!")

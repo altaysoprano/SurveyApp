@@ -13,5 +13,5 @@ data class Survey(
     val options: List<Option> = listOf(),
     @ServerTimestamp
     var surveyAddedTimestamp: Date? = null,
-    val duration: SurveyTime? = null
+    val deadline: Date? = null
 ) : Parcelable

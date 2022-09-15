@@ -12,12 +12,15 @@ import com.example.surveyapp.data.models.User
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.Query
+import io.grpc.Deadline
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import java.util.*
 import javax.inject.Named
+import kotlin.collections.ArrayList
 
 class FirebaseRepository(
     private val firebaseSocialLoginSourceProvider: FirebaseAuthLoginSourceProvider,
@@ -94,7 +97,8 @@ fun getSurveysFromFirestore() = callbackFlow {
         isOwnVoteChecked: Boolean,
         emailName: String,
         title: String,
-        options: List<Option>
+        options: List<Option>,
+        deadline: Date
     ) = flow {
         try {
             emit(Response.Loading)
@@ -102,7 +106,8 @@ fun getSurveysFromFirestore() = callbackFlow {
             val survey = Survey(
                 id = id,
                 title = title,
-                options = options
+                options = options,
+                deadline = deadline
             )
             usersRef.document(emailName).collection("ownedSurveys").document(id).set(survey)
             surveysRef.document(id).set(survey).await()
@@ -118,7 +123,8 @@ fun getSurveysFromFirestore() = callbackFlow {
         }
     }
 
-    suspend fun voteSurvey(emailName: String, id: String, optionId: Int, options: List<Option>, surveyTitle: String) =
+    suspend fun voteSurvey(emailName: String, id: String, optionId: Int,
+                           options: List<Option>, surveyTitle: String, surveyDeadline: Date) =
         flow {
             try {
                 emit(Response.Loading)
@@ -128,7 +134,8 @@ fun getSurveysFromFirestore() = callbackFlow {
                 )
                 val survey = Survey(
                     id = id,
-                    title = surveyTitle
+                    title = surveyTitle,
+                    deadline = surveyDeadline
                 )
                 usersRef.document(emailName).collection("votedSurveys").document(id).set(survey)
                 surveysRef.document(id).collection("emails").document(email.name).set(email).await()

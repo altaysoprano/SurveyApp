@@ -16,6 +16,7 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -63,12 +64,12 @@ class PollDetailViewModel @Inject constructor(
         }
     }
 
-    fun onVote(id: String, optionId: Int, options: List<Option>, surveyTitle: String) = viewModelScope.launch {
+    fun onVote(id: String, optionId: Int, options: List<Option>, surveyTitle: String, deadline: Date) = viewModelScope.launch {
         auth = Firebase.auth
         val currentUser = auth.currentUser
         val emailName = currentUser?.email
 
-        useCases.voteSurvey(emailName ?: "", id, optionId, options, surveyTitle).collect { response ->
+        useCases.voteSurvey(emailName ?: "", id, optionId, options, surveyTitle, deadline).collect { response ->
             when (response) {
                 is Response.Loading -> {
                     _pollDetailState.value = _pollDetailState.value.copy(

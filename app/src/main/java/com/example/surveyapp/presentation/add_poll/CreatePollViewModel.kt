@@ -37,9 +37,9 @@ class CreatePollViewModel @Inject constructor(
             auth = Firebase.auth
             val currentUser = auth.currentUser
             val emailName = currentUser?.email
-            // val surveyTime =
+            val deadline = getDeadLine(_createPollState.value.surveyTime)
 
-            useCases.addSurvey(emailName ?: "", isOwnVoteChecked, title, options).collect { response ->
+            useCases.addSurvey(emailName ?: "", isOwnVoteChecked, title, options, deadline).collect { response ->
                 when (response) {
                     is Response.Loading -> {
                         _createPollState.value = _createPollState.value.copy(
@@ -131,7 +131,6 @@ class CreatePollViewModel @Inject constructor(
             surveyTime = surveyTime,
             setTimeDialogState = false
         )
-        Log.d("Mesaj: ", getDeadLine(createPollState.value.surveyTime).toString())
     }
 
     fun getDeadLine(surveyTime: SurveyTime): Date {
