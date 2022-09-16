@@ -23,7 +23,6 @@ fun SurveyListCard(
     title: String,
     size: Float,
     surveyList: List<Survey>,
-    listSize: Int,
     onSeeAllClick: () -> Unit,
     onItemClick: (String) -> Unit,
 ) {

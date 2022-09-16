@@ -5,6 +5,7 @@ import com.example.surveyapp.data.models.Survey
 
 data class PollDetailState(
     val isVoted: Boolean = false,
+    val isOver: Boolean = false,
     val isLoading: Boolean = false,
     val loadingText: String = "",
     val email: Email? = null,

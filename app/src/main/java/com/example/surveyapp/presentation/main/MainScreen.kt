@@ -2,7 +2,10 @@ package com.example.surveyapp.presentation.main
 
 import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -72,7 +75,7 @@ fun MainScreen(
                 text = { Text("Create A Survey") },
                 backgroundColor = MaterialTheme.colors.primary
             )
-        },
+        }
     )
     {
         Column(
@@ -99,7 +102,6 @@ fun MainScreen(
                         surveyList = surveyListState.value.ownedSurveysData,
                         title = "My Surveys",
                         size = 0.47f,
-                        listSize = 3,
                         onSeeAllClick = {
                             navController.navigate("${context.getString(R.string.all_surveys_screen)}/$OWNED_SURVEYS")
                         }
@@ -110,8 +112,7 @@ fun MainScreen(
                         isLoading = surveyListState.value.isVotedSurveysLoading,
                         surveyList = surveyListState.value.votedSurveysData,
                         title = "Surveys I've Voted",
-                        size = 0.68f,
-                        listSize = 2,
+                        size = 1f,
                         onSeeAllClick = {
                             navController.navigate("${context.getString(R.string.all_surveys_screen)}/$VOTED_SURVEYS")
                         }

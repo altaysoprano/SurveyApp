@@ -28,7 +28,7 @@ import com.example.surveyapp.utils.parseIndexToColor
 @ExperimentalFoundationApi
 @Composable
 fun PollScreen(
-    totalVotes: Int, options: List<Option>?, isVoted: Boolean, isLoading: Boolean, email: Email?,
+    totalVotes: Int, options: List<Option>?, isVoted: Boolean, isLoading: Boolean, isOver: Boolean, email: Email?,
     onVote: (optionId: Int) -> Unit
 ) {
 
@@ -52,7 +52,7 @@ fun PollScreen(
         ) {
             itemsIndexed(options ?: listOf()) { index, option ->
                 Card(
-                    modifier = if (isVoted || isLoading) {
+                    modifier = if (isVoted || isLoading || isOver) {
                         Modifier
                             .fillMaxWidth()
                             .height(72.dp)
@@ -116,7 +116,7 @@ fun PollScreen(
                                         contentDescription = "Check Icon", tint = Color(0XFF6ACB49))
                                 }
                             }
-                            if (isVoted) {
+                            if (isVoted || isOver) {
                                 Text(
                                     text = "${option.numberOfVotes} votes (%${
                                         "%.2f".format(
@@ -133,7 +133,7 @@ fun PollScreen(
                                 .fillMaxWidth()
                                 .padding(4.dp)
                         ) {
-                            if (isVoted) {
+                            if (isVoted || isOver) {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -157,7 +157,7 @@ fun PollScreen(
                 }
             }
             stickyHeader {
-                if (isVoted) {
+                if (isVoted || isOver) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

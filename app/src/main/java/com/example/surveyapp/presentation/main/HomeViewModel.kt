@@ -59,7 +59,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getVotedSurveys(emailName: String) = viewModelScope.launch {
-        useCases.getSurveys(emailName ?: "", "votedSurveys", 2).collect { response ->
+        useCases.getSurveys(emailName ?: "", "votedSurveys", 3).collect { response ->
             Log.d("Mesaj: ", "voted başladı")
             when(response) {
                 is Response.Loading -> {

@@ -9,9 +9,11 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.surveyapp.R
 import com.example.surveyapp.data.models.Survey
 import java.util.*
 
@@ -45,7 +47,21 @@ fun PollDetailScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     var totalVotes = 0
+                    val isOver = pollDetailState.value.isOver
 
+                    if(isOver) {
+                        Card(backgroundColor = Color(0xFF088700), elevation = 4.dp) {
+                            Row(modifier = Modifier.padding(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Text(text = "Survey Concluded", color = Color.White, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_check_24),
+                                    contentDescription = "Check",
+                                    tint = Color.White
+                                )
+                            }
+                        }
+                    }
                     Text(text = "${survey?.title}", fontWeight = FontWeight.Bold)
                     survey?.let { survey ->
                         survey.options.forEach { totalVotes += it.numberOfVotes }
@@ -54,6 +70,7 @@ fun PollDetailScreen(
                             totalVotes = totalVotes, options = survey.options,
                             isVoted = pollDetailState.value.isVoted,
                             isLoading = pollDetailState.value.isLoading,
+                            isOver = isOver,
                             email = pollDetailState.value.email
                         ) { optionId ->
                             survey.id?.let { id ->

@@ -7,7 +7,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.sp
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.R
 import com.example.surveyapp.ui.theme.Blue300
+import com.example.surveyapp.ui.theme.option6Color
+import java.util.*
 
 @Composable
 fun SurveyCard(
@@ -33,6 +35,12 @@ fun SurveyCard(
     onClick: (String) -> Unit
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
+    var isSurveyOver by remember { mutableStateOf(false) }
+    val currentDate = Calendar.getInstance().time
+
+    LaunchedEffect(key1 = true) {
+        isSurveyOver = survey.deadline ?: currentDate < currentDate
+    }
 
     Card(
         shape = MaterialTheme.shapes.small,
@@ -57,7 +65,7 @@ fun SurveyCard(
                     maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                Row() {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(survey.id ?: "", fontWeight = FontWeight.Bold, color = Color.LightGray)
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
@@ -69,6 +77,17 @@ fun SurveyCard(
                             }
                             .size(20.dp)
                     )
+                    if (isSurveyOver) {
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Row() {
+                            Text("Concluded", color = Color(0xFF088700))
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_check_24),
+                                contentDescription = "Check",
+                                tint = Color(0xFF088700)
+                            )
+                        }
+                    }
                 }
             }
             Box(

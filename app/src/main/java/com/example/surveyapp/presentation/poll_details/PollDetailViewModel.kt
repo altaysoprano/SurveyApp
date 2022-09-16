@@ -35,9 +35,12 @@ class PollDetailViewModel @Inject constructor(
         val currentUser = auth.currentUser
         val emailName = currentUser?.email
 
-        val surveyId = savedStateHandle.get<Survey>("survey")?.id
+        // val surveyId = savedStateHandle.get<Survey>("survey")?.id
+        val survey = savedStateHandle.get<Survey>("survey")
+        val deadline = survey?.deadline
 
-        getEmailById(emailName ?: "", surveyId ?: "")
+        checkIsSurveyOver(deadline ?: Date())
+        getEmailById(emailName ?: "", survey?.id ?: "")
     }
 
     fun getEmailById(email: String, id: String) = viewModelScope.launch {
@@ -61,6 +64,15 @@ class PollDetailViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun checkIsSurveyOver(date: Date) {
+        val currentDate = Calendar.getInstance().time
+        if(date < currentDate) {
+            _pollDetailState.value = _pollDetailState.value.copy(
+                isOver = true
+            )
         }
     }
 
