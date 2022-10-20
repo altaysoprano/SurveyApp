@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.surveyapp.R
 import com.example.surveyapp.data.models.Survey
+import com.example.surveyapp.presentation.poll_details.components.SurveyStateCard
 import java.util.*
 
 @ExperimentalFoundationApi
@@ -50,6 +51,8 @@ fun PollDetailScreen(
                     val isOver = pollDetailState.value.isOver
 
                     if(isOver) {
+                        SurveyStateCard(backgroundColor = Color(0xFF088700), text = "Survey Concluded", icon = R.drawable.ic_check_24)
+/*
                         Card(backgroundColor = Color(0xFF088700), elevation = 4.dp) {
                             Row(modifier = Modifier.padding(4.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Text(text = "Survey Concluded", color = Color.White, fontWeight = FontWeight.Bold)
@@ -61,6 +64,8 @@ fun PollDetailScreen(
                                 )
                             }
                         }
+*/
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                     Text(text = "${survey?.title}", fontWeight = FontWeight.Bold)
                     survey?.let { survey ->

@@ -84,7 +84,7 @@ fun AllSurveysCard(
                     items(
                         items = surveyList.take(listSize)
                     ) { survey ->
-                        SurveyCard(
+                        AllSurveysCardItem(
                             survey = survey
                         ) { id ->
                             onItemClick(id)

@@ -1,7 +1,6 @@
-package com.example.surveyapp.presentation.main.components
+package com.example.surveyapp.presentation.all_surveys.components
 
 import android.util.Log
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
@@ -10,9 +9,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterEnd
-import androidx.compose.ui.Alignment.Companion.CenterVertically
-import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ClipboardManager
@@ -20,18 +16,14 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.R
-import com.example.surveyapp.ui.theme.Blue300
-import com.example.surveyapp.ui.theme.option6Color
+import com.example.surveyapp.data.models.Survey
 import java.util.*
 
 @Composable
-fun SurveyCard(
+fun AllSurveysCardItem(
     survey: Survey,
     onClick: (String) -> Unit
 ) {
@@ -60,7 +52,7 @@ fun SurveyCard(
                 .padding(4.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(modifier = Modifier.fillMaxWidth(0.70f)) {
+            Column(modifier = Modifier.fillMaxWidth(0.80f)) {
                 Text(
                     survey.title,
                     fontWeight = FontWeight.Bold,
@@ -84,9 +76,9 @@ fun SurveyCard(
             }
             Box(
                 modifier = Modifier
-                    .align(CenterVertically)
+                    .align(Alignment.CenterVertically)
                     .fillMaxWidth(),
-                contentAlignment = CenterEnd
+                contentAlignment = Alignment.CenterEnd
             ) {
                 Row() {
                     if (isSurveyOver) {
