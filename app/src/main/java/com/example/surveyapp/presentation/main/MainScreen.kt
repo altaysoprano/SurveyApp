@@ -2,6 +2,7 @@ package com.example.surveyapp.presentation.main
 
 import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -75,6 +76,12 @@ fun MainScreen(
                 text = { Text("Create A Survey") },
                 backgroundColor = MaterialTheme.colors.primary
             )
+        },
+        topBar = {
+            SearchSurveyTextfield(
+                isTextBlank = searchSurveyState.value.isTextBlank,
+                error = searchSurveyState.value.error
+            )
         }
     )
     {
@@ -83,9 +90,8 @@ fun MainScreen(
                 .fillMaxSize()
                 .padding(vertical = 16.dp, horizontal = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
-            SearchSurveyTextfield()
+/*
             if (searchSurveyState.value.isTextBlank) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text("Please enter a code", color = MaterialTheme.colors.error)
@@ -94,31 +100,29 @@ fun MainScreen(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(searchSurveyState.value.error, color = MaterialTheme.colors.error)
             }
-            Card(shape = MaterialTheme.shapes.large, elevation = 12.dp,
-                backgroundColor = MaterialTheme.colors.background, modifier = Modifier.padding(vertical = 20.dp)) {
-                Column() {
-                    SurveyListCard(
-                        isLoading = surveyListState.value.isOwnedSurveysLoading,
-                        surveyList = surveyListState.value.ownedSurveysData,
-                        title = "My Surveys",
-                        size = 0.47f,
-                        onSeeAllClick = {
-                            navController.navigate("${context.getString(R.string.all_surveys_screen)}/$OWNED_SURVEYS")
-                        }
-                    ) { id ->
-                        homeViewModel.getSurveyById(id)
+*/
+            Column() {
+                SurveyListCard(
+                    isLoading = surveyListState.value.isOwnedSurveysLoading,
+                    surveyList = surveyListState.value.ownedSurveysData,
+                    title = "My Surveys",
+                    size = 0.47f,
+                    onSeeAllClick = {
+                        navController.navigate("${context.getString(R.string.all_surveys_screen)}/$OWNED_SURVEYS")
                     }
-                    SurveyListCard(
-                        isLoading = surveyListState.value.isVotedSurveysLoading,
-                        surveyList = surveyListState.value.votedSurveysData,
-                        title = "Surveys I've Voted",
-                        size = 1f,
-                        onSeeAllClick = {
-                            navController.navigate("${context.getString(R.string.all_surveys_screen)}/$VOTED_SURVEYS")
-                        }
-                    ) { id ->
-                        homeViewModel.getSurveyById(id)
+                ) { id ->
+                    homeViewModel.getSurveyById(id)
+                }
+                SurveyListCard(
+                    isLoading = surveyListState.value.isVotedSurveysLoading,
+                    surveyList = surveyListState.value.votedSurveysData,
+                    title = "Surveys I've Voted",
+                    size = 1f,
+                    onSeeAllClick = {
+                        navController.navigate("${context.getString(R.string.all_surveys_screen)}/$VOTED_SURVEYS")
                     }
+                ) { id ->
+                    homeViewModel.getSurveyById(id)
                 }
             }
         }

@@ -6,15 +6,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import com.example.surveyapp.R
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -24,31 +23,71 @@ import com.example.surveyapp.ui.theme.option3Color
 
 @Composable
 fun SearchSurveyTextfield(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    isTextBlank: Boolean,
+    error: String
 ) {
 
     val text = viewModel.surveySearchText
-
-    OutlinedTextFieldBackground(color = MaterialTheme.colors.background) {
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(0.75f),
-            value = text.value,
-            label = { Text(text = "Enter the Survey Code", fontWeight = FontWeight.Bold, modifier = Modifier.background(
-                MaterialTheme.colors.background)) },
-            onValueChange = {
-                text.value = it
-            },
-            singleLine = true,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedLabelColor = Color.Black,
-            )
-        )
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.primary)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextFieldBackground(color = MaterialTheme.colors.background) {
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(0.70f),
+                        value = text.value,
+                        label = {
+                            Text(
+                                text = "Enter the Survey Code",
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.background(
+                                    MaterialTheme.colors.background
+                                )
+                            )
+                        },
+                        onValueChange = {
+                            text.value = it
+                        },
+                        singleLine = true,
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedLabelColor = Color.Black,
+                        )
+                    )
+                }
+                SearchSurveyButton {
+                    viewModel.onSearchSurvey(text.value)
+                }
+            }
+            if (isTextBlank) {
+                Text(
+                    "Please enter a code", color = MaterialTheme.colors.error,
+                    modifier = Modifier.background(MaterialTheme.colors.background).fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+            if (error.isNotBlank()) {
+                Text(
+                    error, color = MaterialTheme.colors.error,
+                    modifier = Modifier.background(MaterialTheme.colors.background).fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
-    Spacer(modifier = Modifier.height(8.dp))
-    SearchSurveyButton {
-        viewModel.onSearchSurvey(text.value)
-    }
-
 }
 
 @Composable
@@ -62,6 +101,7 @@ fun OutlinedTextFieldBackground(
         Box(
             modifier = Modifier
                 .matchParentSize()
+                .height(72.dp)
                 .padding(top = 8.dp) // adding some space to the label
                 .background(
                     color,

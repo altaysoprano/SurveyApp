@@ -40,7 +40,7 @@ fun AllSurveysCardItem(
     Card(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
-            .padding(4.dp)
+            .padding(12.dp)
             .fillMaxWidth()
             .clickable { onClick(survey.id ?: "") },
         elevation = 8.dp,
@@ -49,7 +49,7 @@ fun AllSurveysCardItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(4.dp),
+                .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.fillMaxWidth(0.80f)) {

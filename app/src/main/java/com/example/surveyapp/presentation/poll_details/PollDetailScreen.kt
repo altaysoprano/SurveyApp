@@ -8,14 +8,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.surveyapp.R
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.presentation.poll_details.components.SurveyStateCard
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @ExperimentalFoundationApi
@@ -50,21 +55,34 @@ fun PollDetailScreen(
                     var totalVotes = 0
                     val isOver = pollDetailState.value.isOver
 
-                    if(isOver) {
-                        SurveyStateCard(backgroundColor = Color(0xFF088700), text = "Survey Concluded", icon = R.drawable.ic_check_24)
-/*
-                        Card(backgroundColor = Color(0xFF088700), elevation = 4.dp) {
-                            Row(modifier = Modifier.padding(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                                Text(text = "Survey Concluded", color = Color.White, fontWeight = FontWeight.Bold)
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_check_24),
-                                    contentDescription = "Check",
-                                    tint = Color.White
-                                )
-                            }
+                    if (isOver) {
+                        SurveyStateCard(
+                            backgroundColor = Color(0xFF088700),
+                            text = "Survey Concluded",
+                            icon = R.drawable.ic_check_24
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    } else {
+                        val sdf = SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss")
+                        val deadlineString = sdf.format(survey?.deadline)
+                        Row() {
+                            Text(
+                                text = "It will expire on: ",
+                                modifier = Modifier
+                                    .alpha(0.5f)
+                                    .background(Color.White),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontStyle = FontStyle.Italic
+                            )
+                            Text(
+                                text = deadlineString, modifier = Modifier
+                                    .alpha(0.5f)
+                                    .background(Color.White),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
-*/
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                     Text(text = "${survey?.title}", fontWeight = FontWeight.Bold)
