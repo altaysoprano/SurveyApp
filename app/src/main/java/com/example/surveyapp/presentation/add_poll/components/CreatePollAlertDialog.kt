@@ -25,37 +25,42 @@ fun CreatePollAlertDialog(dialogState: Boolean, code: String, onDismiss: () -> U
     if (dialogState) {
         AlertDialog(
             onDismissRequest = { },
+            backgroundColor = MaterialTheme.colors.background,
             text = {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "Survey Code", fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp
-                    )
-                }
-                Spacer(modifier = Modifier.height(32.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 32.dp).background(Color.LightGray),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = code, fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Icon(
-                        painter = painterResource(R.drawable.ic_copy_24),
-                        contentDescription = "print",
-                        modifier = Modifier.clickable {
-                            clipboardManager.setText(AnnotatedString((code)))
-                        }
-                    )
+                Column(){
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "Survey Code", fontWeight = FontWeight.Bold,
+                            fontSize = 24.sp, color = MaterialTheme.colors.primary
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = code, fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold, textAlign = TextAlign.Center,
+                            color = MaterialTheme.colors.background,
+                            modifier = Modifier.background(MaterialTheme.colors.onBackground).padding(4.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            painter = painterResource(R.drawable.ic_copy_24),
+                            contentDescription = "print",
+                            modifier = Modifier.clickable {
+                                clipboardManager.setText(AnnotatedString((code)))
+                            }
+                        )
+                    }
                 }
             },
             confirmButton = {
