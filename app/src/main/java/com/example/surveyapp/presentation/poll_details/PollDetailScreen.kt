@@ -48,9 +48,9 @@ fun PollDetailScreen(
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(vertical = 8.dp, horizontal = 4.dp),
+                        .padding(8.dp),
                     horizontalAlignment = CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Top
                 ) {
                     var totalVotes = 0
                     val isOver = pollDetailState.value.isOver

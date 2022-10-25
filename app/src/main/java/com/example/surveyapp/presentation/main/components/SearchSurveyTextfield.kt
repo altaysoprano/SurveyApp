@@ -42,13 +42,14 @@ fun SearchSurveyTextfield(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .fillMaxHeight(0.1f)
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextFieldBackground(color = MaterialTheme.colors.background) {
                     OutlinedTextField(
-                        modifier = Modifier.fillMaxWidth(0.70f),
+                        modifier = Modifier.fillMaxWidth(0.70f).fillMaxHeight(),
                         value = text.value,
                         label = {
                             Text(

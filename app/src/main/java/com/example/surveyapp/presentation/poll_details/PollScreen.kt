@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -28,7 +29,12 @@ import com.example.surveyapp.utils.parseIndexToColor
 @ExperimentalFoundationApi
 @Composable
 fun PollScreen(
-    totalVotes: Int, options: List<Option>?, isVoted: Boolean, isLoading: Boolean, isOver: Boolean, email: Email?,
+    totalVotes: Int,
+    options: List<Option>?,
+    isVoted: Boolean,
+    isLoading: Boolean,
+    isOver: Boolean,
+    email: Email?,
     onVote: (optionId: Int) -> Unit
 ) {
 
@@ -48,28 +54,30 @@ fun PollScreen(
     ) {
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            modifier = Modifier
+                .background(MaterialTheme.colors.background)
         ) {
             itemsIndexed(options ?: listOf()) { index, option ->
                 Card(
                     modifier = if (isVoted || isLoading || isOver) {
                         Modifier
                             .fillMaxWidth()
-                            .height(72.dp)
-                            .alpha(if (index == email?.votedOptionId) 0.5f else 1f)
+                            .alpha(1f)
                             .clickable(
                                 indication = null,
                                 interactionSource = remember { MutableInteractionSource() }
                             ) {}
+                            .padding(8.dp)
                     } else {
                         Modifier
                             .fillMaxWidth()
-                            .height(72.dp)
                             .clickable {
                                 onVote(index)
                             }
+                            .padding(8.dp)
                     },
-                    backgroundColor = MaterialTheme.colors.background
+                    backgroundColor = MaterialTheme.colors.background,
+                    elevation = 4.dp
                 ) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
@@ -98,34 +106,46 @@ fun PollScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(
-                                    horizontal = 4.dp,
-                                    vertical = 4.dp
-                                ),
+                                .padding(horizontal = 4.dp, vertical = 16.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Absolute.SpaceBetween
                         ) {
-                            Row {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(0.75f),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Text(
+                                    modifier = Modifier.fillMaxWidth(0.9f),
                                     text = option.name,
                                     textAlign = TextAlign.Start
                                 )
-                                if(index == email?.votedOptionId) {
+                                if (index == email?.votedOptionId) {
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Icon(painter = painterResource(id = R.drawable.ic_check_24),
-                                        contentDescription = "Check Icon", tint = Color(0XFF6ACB49))
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_check_24),
+                                        contentDescription = "Check Icon", tint = Color(0XFF6ACB49)
+                                    )
                                 }
                             }
                             if (isVoted || isOver) {
-                                Text(
-                                    text = "${option.numberOfVotes} votes (%${
-                                        "%.2f".format(
-                                            ratio * 100
-                                        )
-                                    })",
-                                    textAlign = TextAlign.End,
-                                    fontSize = 14.sp,
-                                )
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(
+                                        text = "${option.numberOfVotes} votes",
+                                        textAlign = TextAlign.End,
+                                        fontSize = 14.sp,
+                                        color = MaterialTheme.colors.primary,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = "(%${
+                                            "%.2f".format(
+                                                ratio * 100
+                                            )
+                                        })",
+                                        textAlign = TextAlign.End,
+                                        fontSize = 14.sp,
+                                    )
+                                }
                             }
                         }
                         Row(

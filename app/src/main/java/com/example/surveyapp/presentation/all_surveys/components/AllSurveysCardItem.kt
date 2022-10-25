@@ -18,6 +18,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.surveyapp.R
 import com.example.surveyapp.data.models.Survey
 import java.util.*
@@ -52,7 +53,7 @@ fun AllSurveysCardItem(
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(modifier = Modifier.fillMaxWidth(0.80f)) {
+            Column(modifier = Modifier.fillMaxWidth(0.70f)) {
                 Text(
                     survey.title,
                     fontWeight = FontWeight.Bold,
@@ -91,15 +92,17 @@ fun AllSurveysCardItem(
                     } else {
                         Spacer(modifier = Modifier.width(8.dp))
                         if (remainingTime <= 300 && remainingTime > 60)
-                            Row() {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     "${(remainingTime / 60)}m",
-                                    color = MaterialTheme.colors.error
+                                    color = MaterialTheme.colors.error,
+                                    fontSize = 14.sp
                                 )
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_hourglass),
                                     contentDescription = "Timer",
-                                    tint = MaterialTheme.colors.error
+                                    tint = MaterialTheme.colors.error,
+                                    modifier = Modifier.size(16.dp)
                                 )
                             }
                         else if (remainingTime <= 60) {

@@ -1,9 +1,7 @@
 package com.example.surveyapp.presentation.main.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,11 +15,10 @@ fun SearchSurveyButton(
     onClick: () -> Unit
 ) {
     Button(
-        modifier = Modifier.height(72.dp),
+        modifier = Modifier.fillMaxHeight().offset((-4).dp),
         onClick = {
             onClick()
         }, elevation = ButtonDefaults.elevation(
-            defaultElevation = 10.dp,
             pressedElevation = 15.dp,
             disabledElevation = 0.dp
         ),

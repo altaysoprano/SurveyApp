@@ -99,15 +99,17 @@ fun SurveyCard(
                     } else {
                         Spacer(modifier = Modifier.width(8.dp))
                         if (remainingTime <= 300 && remainingTime > 60)
-                            Row() {
+                            Row(verticalAlignment = CenterVertically) {
                                 Text(
                                     "${(remainingTime / 60)}m",
-                                    color = MaterialTheme.colors.error
+                                    color = MaterialTheme.colors.error,
+                                    fontSize = 14.sp
                                 )
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_hourglass),
                                     contentDescription = "Timer",
-                                    tint = MaterialTheme.colors.error
+                                    tint = MaterialTheme.colors.error,
+                                    modifier = Modifier.size(16.dp)
                                 )
                             }
                         else if (remainingTime <= 60) {
