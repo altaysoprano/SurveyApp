@@ -1,5 +1,8 @@
 package com.example.surveyapp.presentation.poll_details
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -20,9 +23,11 @@ import com.example.surveyapp.R
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.presentation.poll_details.components.SurveyStateCard
 import java.text.SimpleDateFormat
+import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+@RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalFoundationApi
 @Composable
 fun PollDetailScreen(
@@ -63,8 +68,6 @@ fun PollDetailScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     } else {
-                        val sdf = SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss")
-                        val deadlineString = sdf.format(survey?.deadline)
                         Row() {
                             Text(
                                 text = "It will expire on: ",
@@ -76,8 +79,8 @@ fun PollDetailScreen(
                                 fontStyle = FontStyle.Italic
                             )
                             Text(
-                                text = deadlineString, modifier = Modifier
-                                    .alpha(0.5f)
+                                text = DateTimeUtil.formatSurveyDate(survey?.deadline), modifier = Modifier
+                                    .alpha(0.6f)
                                     .background(Color.White),
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold
