@@ -109,7 +109,7 @@ class AllSurveysViewModel @Inject constructor(
 
     fun onPaginate() = viewModelScope.launch {
         _allSurveysState.value = _allSurveysState.value.copy(
-            limit = _allSurveysState.value.limit + 10
+            limit = _allSurveysState.value.limit + 20
         )
         auth = Firebase.auth
         val currentUser = auth.currentUser

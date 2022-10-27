@@ -1,25 +1,25 @@
 package com.example.surveyapp.presentation.all_surveys.components
 
-import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.surveyapp.R
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.presentation.main.components.SurveyCard
+import androidx.compose.runtime.getValue
+
 
 @Composable
 fun AllSurveysCard(
@@ -73,13 +73,13 @@ fun AllSurveysCard(
                     }
                 }
             } else {
-                val state = rememberLazyListState()
+                val listState = rememberLazyListState()
 
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(8.dp),
-                    state = state
+                    state = listState
                 ) {
                     items(
                         items = surveyList.take(listSize)
@@ -91,7 +91,12 @@ fun AllSurveysCard(
                         }
                     }
                 }
-                val lastVisibleItemIndex = state.layoutInfo.visibleItemsInfo.lastIndex + state.firstVisibleItemIndex
+                val lastVisibleItemIndex by remember(listState) {
+                    derivedStateOf {
+                        listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                    }
+                    //derivedStateOf only recomposes when calculation changes
+                }
 
                 if (lastVisibleItemIndex.toLong() > limit - 2) {
                     onPaginate()
