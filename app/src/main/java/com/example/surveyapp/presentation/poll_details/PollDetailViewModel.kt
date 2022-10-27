@@ -14,6 +14,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.*
@@ -30,12 +32,14 @@ class PollDetailViewModel @Inject constructor(
 
     private var auth: FirebaseAuth
 
+    private val _snackBarFlow = MutableSharedFlow<SnackbarEvent>()
+    val snackbarFlow = _snackBarFlow.asSharedFlow()
+
     init {
         auth = Firebase.auth
         val currentUser = auth.currentUser
         val emailName = currentUser?.email
 
-        // val surveyId = savedStateHandle.get<Survey>("survey")?.id
         val survey = savedStateHandle.get<Survey>("survey")
         val deadline = survey?.deadline
 
@@ -81,27 +85,38 @@ class PollDetailViewModel @Inject constructor(
         val currentUser = auth.currentUser
         val emailName = currentUser?.email
 
-        useCases.voteSurvey(emailName ?: "", id, optionId, options, surveyTitle, deadline).collect { response ->
-            when (response) {
-                is Response.Loading -> {
-                    _pollDetailState.value = _pollDetailState.value.copy(
-                        isLoading = true,
-                        loadingText = "Vote is saving..."
-                    )
-                }
-                is Response.Success -> {
-                    _pollDetailState.value = _pollDetailState.value.copy(
-                        isVoted = true,
-                        isLoading = false,
-                        email = response.data
-                    )
-                }
-                is Response.Error -> {
-                    _pollDetailState.value = _pollDetailState.value.copy(
-                        isLoading = false
-                    )
+        checkIsSurveyOver(deadline)
+
+        if(!_pollDetailState.value.isOver) {
+            useCases.voteSurvey(emailName ?: "", id, optionId, options, surveyTitle, deadline).collect { response ->
+                when (response) {
+                    is Response.Loading -> {
+                        _pollDetailState.value = _pollDetailState.value.copy(
+                            isLoading = true,
+                            loadingText = "Vote is saving..."
+                        )
+                    }
+                    is Response.Success -> {
+                        _pollDetailState.value = _pollDetailState.value.copy(
+                            isVoted = true,
+                            isLoading = false,
+                            email = response.data
+                        )
+                    }
+                    is Response.Error -> {
+                        _pollDetailState.value = _pollDetailState.value.copy(
+                            isLoading = false
+                        )
+                    }
                 }
             }
+        } else {
+            Log.d("Mesaj: ", "Bu anketin süresi geçmiş")
+            _snackBarFlow.emit(
+                SnackbarEvent.VotedSurveySnackbar(
+                    message = "This survey has expired. You cannot vote."
+                )
+            )
         }
     }
 }

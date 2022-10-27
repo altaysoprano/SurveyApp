@@ -22,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.surveyapp.R
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.presentation.poll_details.components.SurveyStateCard
+import kotlinx.coroutines.flow.collectLatest
 import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -36,12 +37,26 @@ fun PollDetailScreen(
 ) {
 
     val pollDetailState = viewModel.pollDetailState
+    val scaffoldState = rememberScaffoldState()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.snackbarFlow.collectLatest { event ->
+            when(event) {
+                is SnackbarEvent.VotedSurveySnackbar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message
+                    )
+                }
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        backgroundColor = MaterialTheme.colors.primary
-    ) {
+        backgroundColor = MaterialTheme.colors.primary,
+        scaffoldState = scaffoldState
+        ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Card(
                 elevation = 8.dp,
