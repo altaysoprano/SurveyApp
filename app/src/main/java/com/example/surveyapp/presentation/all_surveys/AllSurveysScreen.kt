@@ -23,7 +23,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import com.example.surveyapp.R
 import com.example.surveyapp.presentation.all_surveys.components.AllSurveysCard
+import com.example.surveyapp.presentation.all_surveys.components.SearchSurveyListTextfield
 import com.example.surveyapp.presentation.main.HomeViewModel
+import com.example.surveyapp.presentation.main.components.SearchSurveyTextfield
 import com.example.surveyapp.presentation.main.components.SurveyListCard
 import com.google.gson.Gson
 
@@ -58,8 +60,7 @@ fun AllSurveysScreen(
                 size = 1f,
                 surveyList = allSurveysState.value.data,
                 listSize = allSurveysState.value.data.size,
-                limit = allSurveysState.value.limit,
-                { allSurveysViewModel.onPaginate() }
+                searchText = allSurveysState.value.text,
             ) { id ->
                 allSurveysViewModel.getSurveyById(id)
             }
@@ -76,7 +77,8 @@ fun AllSurveysScreen(
 
             if(allSurveysState.value.isPaginating) {
                 Box(contentAlignment = Alignment.BottomCenter,
-                    modifier = Modifier.align(Alignment.BottomCenter)
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
                         .alpha(0.5f)
                         .height(50.dp)
                         .fillMaxWidth()

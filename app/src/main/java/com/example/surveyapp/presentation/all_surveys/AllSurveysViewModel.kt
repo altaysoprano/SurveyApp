@@ -41,9 +41,8 @@ class AllSurveysViewModel @Inject constructor(
         auth = Firebase.auth
         val currentUser = auth.currentUser
         val emailName = currentUser?.email
-        val limit = _allSurveysState.value.limit
 
-        useCases.getSurveys(emailName ?: "", collectionName, limit).collect { response ->
+        useCases.getSurveys(emailName ?: "", collectionName).collect { response ->
             when(response) {
                 is Response.Loading -> {
                     _allSurveysState.value = _allSurveysState.value.copy(
@@ -101,12 +100,19 @@ class AllSurveysViewModel @Inject constructor(
         }
     }
 
+    fun onSearch(text: String) {
+        _allSurveysState.value = _allSurveysState.value.copy(
+            text = text
+        )
+    }
+
     fun onNavigatedToPollDetail() {
         _searchSurveyState.value = _searchSurveyState.value.copy(
             data = null
         )
     }
 
+/*
     fun onPaginate() = viewModelScope.launch {
         _allSurveysState.value = _allSurveysState.value.copy(
             limit = _allSurveysState.value.limit + 20
@@ -138,4 +144,5 @@ class AllSurveysViewModel @Inject constructor(
             }
         }
     }
+*/
 }

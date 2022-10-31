@@ -1,5 +1,6 @@
 package com.example.surveyapp.presentation.all_surveys.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,6 +20,7 @@ import com.example.surveyapp.R
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.presentation.main.components.SurveyCard
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
 
 
 @Composable
@@ -28,9 +30,8 @@ fun AllSurveysCard(
     size: Float,
     surveyList: List<Survey>,
     listSize: Int,
-    limit: Long,
-    onPaginate: () -> Unit,
-    onItemClick: (String) -> Unit,
+    searchText: String,
+    onItemClick: (String) -> Unit
 ) {
 
     Card(
@@ -56,13 +57,19 @@ fun AllSurveysCard(
                     color = MaterialTheme.colors.primary
                 )
             }
+            SearchSurveyListTextfield()
             if (isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
             if (surveyList.isEmpty() && !isLoading) {
-                Box(modifier = Modifier.fillMaxSize().alpha(0.5f), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha(0.5f),
+                    contentAlignment = Alignment.Center
+                ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_no_survey_found_24),
@@ -82,7 +89,11 @@ fun AllSurveysCard(
                     state = listState
                 ) {
                     items(
-                        items = surveyList.take(listSize)
+                        items = if (searchText.isBlank()) {
+                            surveyList.take(listSize)
+                        } else {
+                            surveyList.take(listSize).filter { it.title.contains(searchText, ignoreCase = true) }
+                        }
                     ) { survey ->
                         AllSurveysCardItem(
                             survey = survey
@@ -90,16 +101,6 @@ fun AllSurveysCard(
                             onItemClick(id)
                         }
                     }
-                }
-                val lastVisibleItemIndex by remember(listState) {
-                    derivedStateOf {
-                        listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-                    }
-                    //derivedStateOf only recomposes when calculation changes
-                }
-
-                if (lastVisibleItemIndex.toLong() > limit - 2) {
-                    onPaginate()
                 }
             }
         }

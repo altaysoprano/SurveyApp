@@ -104,7 +104,7 @@ fun MainScreen(
             Column() {
                 SurveyListCard(
                     isLoading = surveyListState.value.isOwnedSurveysLoading,
-                    surveyList = surveyListState.value.ownedSurveysData,
+                    surveyList = surveyListState.value.ownedSurveysData.take(3),
                     title = "My Latest Surveys",
                     size = 0.47f,
                     onSeeAllClick = {
@@ -115,8 +115,8 @@ fun MainScreen(
                 }
                 SurveyListCard(
                     isLoading = surveyListState.value.isVotedSurveysLoading,
-                    surveyList = surveyListState.value.votedSurveysData,
-                    title = "Latest I've Voted",
+                    surveyList = surveyListState.value.votedSurveysData.take(3),
+                    title = "I Voted Last",
                     size = 1f,
                     onSeeAllClick = {
                         navController.navigate("${context.getString(R.string.all_surveys_screen)}/$VOTED_SURVEYS")

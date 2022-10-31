@@ -59,24 +59,20 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getVotedSurveys(emailName: String) = viewModelScope.launch {
-        useCases.getSurveys(emailName ?: "", "votedSurveys", 3).collect { response ->
-            Log.d("Mesaj: ", "voted başladı")
+        useCases.getSurveys(emailName ?: "", "votedSurveys").collect { response ->
             when(response) {
                 is Response.Loading -> {
-                    Log.d("Mesaj: ", "Voted Anketler yükleniyor")
                     _surveyListState.value = _surveyListState.value.copy(
                         isVotedSurveysLoading = true
                     )
                 }
                 is Response.Success -> {
-                    Log.d("Mesaj: ", "Voted Anketler yüklendi")
                     _surveyListState.value = _surveyListState.value.copy(
                         isVotedSurveysLoading = false,
                         votedSurveysData = response.data
                     )
                 }
                 is Response.Error -> {
-                    Log.d("Mesaj: ", "Voted Anket yüklemesinde sorun oluştu")
                     _surveyListState.value = _surveyListState.value.copy(
                         isVotedSurveysLoading = false,
                         votedSurveysError = response.message
@@ -87,23 +83,20 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getOwnedSurveys(emailName: String) = viewModelScope.launch {
-        useCases.getSurveys(emailName ?: "", "ownedSurveys", 3).collect { response ->
+        useCases.getSurveys(emailName ?: "", "ownedSurveys").collect { response ->
             when(response) {
                 is Response.Loading -> {
-                    Log.d("Mesaj: ", "Owned Anketler yükleniyor")
                     _surveyListState.value = _surveyListState.value.copy(
                         isOwnedSurveysLoading = true
                     )
                 }
                 is Response.Success -> {
-                    Log.d("Mesaj: ", "Owned Anketler yüklendi")
                     _surveyListState.value = _surveyListState.value.copy(
                         isOwnedSurveysLoading = false,
                         ownedSurveysData = response.data
                     )
                 }
                 is Response.Error -> {
-                    Log.d("Mesaj: ", "Owned Anket yüklemesinde sorun oluştu")
                     _surveyListState.value = _surveyListState.value.copy(
                         isOwnedSurveysLoading = false,
                         ownedSurveysError = response.message

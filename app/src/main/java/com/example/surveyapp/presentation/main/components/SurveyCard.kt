@@ -69,7 +69,7 @@ fun SurveyCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(survey.id ?: "", fontWeight = FontWeight.Bold, color = Color.LightGray)
+                    Text(survey.id ?: "", fontWeight = FontWeight.Bold, color = Color.Gray)
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
                         painter = painterResource(R.drawable.ic_copy_24),

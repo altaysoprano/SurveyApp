@@ -8,7 +8,6 @@ class GetSurveys(
 
     suspend operator fun invoke(
         email: String,
-        collectionName: String,
-        limit: Long
-    ) = repo.getSurveys(email, collectionName, limit)
+        collectionName: String
+    ) = repo.getSurveys(email, collectionName)
 }
