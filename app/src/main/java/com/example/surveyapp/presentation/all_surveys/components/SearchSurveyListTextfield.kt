@@ -52,7 +52,6 @@ fun SearchSurveyListTextfield(
                     label = {
                         Text(
                             text = "Search Survey",
-                            fontWeight = FontWeight.Bold,
                             modifier = Modifier.background(
                                 MaterialTheme.colors.background
                             )

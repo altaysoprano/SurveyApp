@@ -55,7 +55,7 @@ fun PollScreen(
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .background(MaterialTheme.colors.background)
+                .background(MaterialTheme.colors.surface)
         ) {
             itemsIndexed(options ?: listOf()) { index, option ->
                 Card(
@@ -80,7 +80,8 @@ fun PollScreen(
                     elevation = 4.dp
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize(),
                         verticalArrangement = Arrangement.Center
                     ) {
 
@@ -111,13 +112,16 @@ fun PollScreen(
                             horizontalArrangement = Arrangement.Absolute.SpaceBetween
                         ) {
                             Row(
-                                modifier = Modifier.fillMaxWidth(0.75f),
+                                modifier = if (isVoted || isOver) {
+                                    Modifier.fillMaxWidth(0.75f)
+                                } else {
+                                    Modifier.fillMaxWidth()
+                                },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
                                     modifier = Modifier.fillMaxWidth(0.9f),
-                                    text = option.name,
-                                    textAlign = TextAlign.Start
+                                    text = option.name
                                 )
                                 if (index == email?.votedOptionId) {
                                     Spacer(modifier = Modifier.width(8.dp))
@@ -148,12 +152,12 @@ fun PollScreen(
                                 }
                             }
                         }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp)
-                        ) {
-                            if (isVoted || isOver) {
+                        if (isVoted || isOver) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 4.dp, end = 4.dp, bottom = 8.dp),
+                            ) {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -186,21 +190,21 @@ fun PollScreen(
                         horizontalArrangement = Arrangement.End
                     ) {
                         Text(
-                            text = "Total Votes: ",
+                            text = "Total: ",
                             letterSpacing = (-0.7).sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
                         )
-                        Card(
-                            backgroundColor = Color.Black
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(4.dp),
-                                text = "$totalVotes",
-                                letterSpacing = (-0.7).sp,
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        }
+                        Text(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .offset(x = (-4).dp),
+                            text = "$totalVotes votes",
+                            letterSpacing = (-0.7).sp,
+                            color = MaterialTheme.colors.primary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
                     }
                 }
             }

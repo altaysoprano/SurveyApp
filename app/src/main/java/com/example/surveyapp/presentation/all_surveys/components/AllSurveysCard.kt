@@ -89,11 +89,7 @@ fun AllSurveysCard(
                     state = listState
                 ) {
                     items(
-                        items = if (searchText.isBlank()) {
-                            surveyList.take(listSize)
-                        } else {
-                            surveyList.take(listSize).filter { it.title.contains(searchText, ignoreCase = true) }
-                        }
+                        items = surveyList.take(listSize)
                     ) { survey ->
                         AllSurveysCardItem(
                             survey = survey

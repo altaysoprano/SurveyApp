@@ -129,7 +129,6 @@ fun CreatePollScreen(
                                         onValueChange = {
                                             viewModel.onOptionChanged(it, index)
                                         },
-                                        singleLine = true,
                                         trailingIcon = {
                                             if (createPollState.value.options[index].name.isNotBlank()) {
                                                 Icon(

@@ -6,12 +6,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.surveyapp.common.Response
+import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.domain.usecase.UseCases
 import com.example.surveyapp.presentation.main.SearchSurveyState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,6 +28,8 @@ class AllSurveysViewModel @Inject constructor(
 
     private val _searchSurveyState = mutableStateOf(SearchSurveyState())
     val searchSurveyState = _searchSurveyState
+
+    private var allSurveys: MutableList<Survey> = mutableListOf()
 
     private lateinit var auth: FirebaseAuth
 
@@ -50,6 +54,7 @@ class AllSurveysViewModel @Inject constructor(
                     )
                 }
                 is Response.Success -> {
+                    allSurveys = response.data
                     _allSurveysState.value = _allSurveysState.value.copy(
                         isLoading = false,
                         data = response.data
@@ -101,9 +106,17 @@ class AllSurveysViewModel @Inject constructor(
     }
 
     fun onSearch(text: String) {
-        _allSurveysState.value = _allSurveysState.value.copy(
-            text = text
-        )
+        if(text.isNotBlank()) {
+            _allSurveysState.value = _allSurveysState.value.copy(
+                text = text,
+                data = allSurveys.filter { it.title.contains(text, ignoreCase = true) }
+            )
+        } else {
+            _allSurveysState.value = _allSurveysState.value.copy(
+                text = text,
+                data = allSurveys
+            )
+        }
     }
 
     fun onNavigatedToPollDetail() {

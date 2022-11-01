@@ -33,11 +33,6 @@ fun AllSurveysCardItem(
     val currentDate = Calendar.getInstance().time
     var remainingTime: Long by remember { mutableStateOf(1000) }
 
-    LaunchedEffect(key1 = true) {
-        isSurveyOver = survey.deadline ?: currentDate < currentDate
-        remainingTime = ((survey.deadline?.time ?: currentDate.time) - currentDate.time) / 1000
-    }
-
     Card(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
@@ -82,6 +77,8 @@ fun AllSurveysCardItem(
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Row() {
+                    isSurveyOver = survey.deadline ?: currentDate < currentDate
+                    remainingTime = ((survey.deadline?.time ?: currentDate.time) - currentDate.time) / 1000
                     if (isSurveyOver) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
@@ -90,8 +87,10 @@ fun AllSurveysCardItem(
                             tint = Color(0xFF088700)
                         )
                     } else {
+                        Log.d("Mesaj: ", "${survey.title} else'a düştü, remaining time: $remainingTime")
                         Spacer(modifier = Modifier.width(8.dp))
-                        if (remainingTime <= 300 && remainingTime > 60)
+                        if (remainingTime <= 300 && remainingTime > 60) {
+                            Log.d("Mesaj: ", "${survey.title} else'a düştü, 60-300 arasında")
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     "${(remainingTime / 60)}m",
@@ -105,7 +104,9 @@ fun AllSurveysCardItem(
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
+                        }
                         else if (remainingTime <= 60) {
+                            Log.d("Mesaj: ", "${survey.title} else'a düştü, 60'tan küçük")
                             Row() {
                                 Text(
                                     "${remainingTime}s",
