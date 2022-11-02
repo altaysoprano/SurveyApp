@@ -44,19 +44,6 @@ fun AllSurveysCard(
         backgroundColor = MaterialTheme.colors.background
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    modifier = Modifier.padding(8.dp),
-                    text = title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colors.primary
-                )
-            }
             SearchSurveyListTextfield()
             if (isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

@@ -1,11 +1,13 @@
 package com.example.surveyapp.presentation
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
@@ -17,8 +19,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.surveyapp.R
 import com.example.surveyapp.presentation.add_poll.CreatePollViewModel
 import com.example.surveyapp.presentation.add_poll.components.*
@@ -51,8 +55,30 @@ fun CreatePollScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        backgroundColor = MaterialTheme.colors.background
-    ) {
+        backgroundColor = MaterialTheme.colors.background,
+        topBar = {
+            TopAppBar(
+                backgroundColor = MaterialTheme.colors.background,
+                contentColor = MaterialTheme.colors.primary,
+                title = {
+                    Text(
+                        text = "Create A Survey",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                },
+                navigationIcon =
+                {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
+            )
+        }
+        ) {
         CreatePollAlertDialog(
             createPollState.value.dialogState,
             createPollState.value.data?.id ?: ""
@@ -70,7 +96,7 @@ fun CreatePollScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedTextFieldBackground(color = MaterialTheme.colors.background) {

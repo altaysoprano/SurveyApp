@@ -1,6 +1,7 @@
 package com.example.surveyapp.presentation.main
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.scrollable
@@ -10,6 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -91,16 +93,6 @@ fun MainScreen(
                 .padding(vertical = 16.dp, horizontal = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-/*
-            if (searchSurveyState.value.isTextBlank) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text("Please enter a code", color = MaterialTheme.colors.error)
-            }
-            if (searchSurveyState.value.error.isNotBlank()) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(searchSurveyState.value.error, color = MaterialTheme.colors.error)
-            }
-*/
             Column() {
                 SurveyListCard(
                     isLoading = surveyListState.value.isOwnedSurveysLoading,
@@ -136,27 +128,6 @@ fun MainScreen(
                 CircularProgressIndicator()
             }
         }
-        //AŞAĞIDAKİ KISMI CARDIN İÇİNE YAZACAKSIN
-/*
-        if(surveyListState.value.data.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Text("Liste boş")
-            }
-        }
-*/
     }
 }
 
-//AŞAĞIDAKİLERİ DAHA SONRA UYGUN YERLERE KOY
-/*
-        when (val surveysReference = homeViewModel.surveysReference) {
-            is Response.Loading -> Log.d("Mesaj: ", "Yükleniyor")
-            is Response.Success -> {
-                SurveysContent(
-                    padding = padding,
-                    surveys = surveysReference.data,
-                )
-            }
-            is Error -> Log.d("Mesaj: ", surveysReference.message.toString())
-        }
-*/

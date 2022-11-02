@@ -55,7 +55,7 @@ fun PollScreen(
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .background(MaterialTheme.colors.surface)
+                .background(MaterialTheme.colors.background).padding(vertical = 16.dp)
         ) {
             itemsIndexed(options ?: listOf()) { index, option ->
                 Card(
@@ -185,7 +185,7 @@ fun PollScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp, horizontal = 4.dp),
+                            .padding(horizontal = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End
                     ) {

@@ -6,19 +6,25 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.surveyapp.R
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.presentation.poll_details.components.SurveyStateCard
@@ -33,15 +39,17 @@ import java.util.*
 @Composable
 fun PollDetailScreen(
     survey: Survey?,
+    navController: NavController,
     viewModel: PollDetailViewModel = hiltViewModel()
 ) {
 
     val pollDetailState = viewModel.pollDetailState
     val scaffoldState = rememberScaffoldState()
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         viewModel.snackbarFlow.collectLatest { event ->
-            when(event) {
+            when (event) {
                 is SnackbarEvent.VotedSurveySnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message
@@ -54,8 +62,30 @@ fun PollDetailScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        backgroundColor = MaterialTheme.colors.primary,
-        scaffoldState = scaffoldState
+        backgroundColor = MaterialTheme.colors.surface,
+        scaffoldState = scaffoldState,
+        topBar = {
+            TopAppBar(
+                backgroundColor = MaterialTheme.colors.background,
+                contentColor = MaterialTheme.colors.primary,
+                title = {
+                    Text(
+                        text = "Survey Detail",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                },
+                navigationIcon =
+                {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
+            )
+        },
         ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Card(
@@ -63,7 +93,7 @@ fun PollDetailScreen(
                 modifier = Modifier
                     .padding(horizontal = 8.dp, vertical = 16.dp)
                     .fillMaxWidth()
-                    .align(Center),
+                    .align(TopCenter),
                 backgroundColor = MaterialTheme.colors.background
             ) {
                 Column(
@@ -94,7 +124,8 @@ fun PollDetailScreen(
                                 fontStyle = FontStyle.Italic
                             )
                             Text(
-                                text = DateTimeUtil.formatSurveyDate(survey?.deadline), modifier = Modifier
+                                text = DateTimeUtil.formatSurveyDate(survey?.deadline),
+                                modifier = Modifier
                                     .alpha(0.6f)
                                     .background(Color.White),
                                 fontSize = 14.sp,
