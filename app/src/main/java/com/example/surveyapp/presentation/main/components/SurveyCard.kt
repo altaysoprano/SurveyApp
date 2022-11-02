@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -69,7 +70,7 @@ fun SurveyCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(survey.id ?: "", fontWeight = FontWeight.Bold, color = Color.Gray)
+                    Text(survey.id ?: "", modifier = Modifier.alpha(0.7f))
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
                         painter = painterResource(R.drawable.ic_copy_24),
@@ -79,6 +80,7 @@ fun SurveyCard(
                                 clipboardManager.setText(AnnotatedString((survey.id ?: "")))
                             }
                             .size(20.dp)
+                            .alpha(0.8f)
                     )
                 }
             }

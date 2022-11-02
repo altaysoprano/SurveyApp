@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,22 +52,39 @@ fun SurveyListCard(
                     fontSize = 20.sp,
                     color = MaterialTheme.colors.primary
                 )
-                Text(
-                    modifier = Modifier.padding(8.dp).clickable {onSeeAllClick()},
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    text = "See All >",
-                    textDecoration = TextDecoration.Underline,
-                    color = MaterialTheme.colors.primary
-                )
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { onSeeAllClick() }) {
+                    Text(
+                        fontSize = 14.sp,
+                        text = "See All",
+                        textDecoration = TextDecoration.Underline,
+                        color = MaterialTheme.colors.primary
+                    )
+                    Icon(
+                        painterResource(id = R.drawable.ic_baseline_chevron_right_24),
+                        contentDescription = "Right Arrow",
+                        tint = MaterialTheme.colors.primary,
+                        modifier = Modifier.offset(x = (-4).dp)
+                    )
+                }
             }
             if (isLoading) {
-                Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     CircularProgressIndicator()
                 }
             }
             if (surveyList.isEmpty() && !isLoading) {
-                Box(modifier = Modifier.fillMaxWidth().padding(16.dp).alpha(0.5f), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .alpha(0.5f),
+                    contentAlignment = Alignment.Center
+                ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_no_survey_found_24),
