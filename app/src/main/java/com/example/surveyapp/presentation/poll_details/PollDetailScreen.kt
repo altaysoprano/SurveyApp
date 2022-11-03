@@ -124,7 +124,10 @@ fun PollDetailScreen(
                         ) {
                             DropdownMenuItem(onClick = {
                                 viewModel.viewModelScope.launch {
-                                    viewModel.onShare(context = context, permissionsState = permissionsState)
+                                    viewModel.onShare(
+                                        context = context,
+                                        permissionsState = permissionsState
+                                    )
                                 }
                             }) {
                                 Row(
@@ -192,25 +195,38 @@ fun PollDetailScreen(
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                     }
-                    Text(text = "${survey?.title}", fontWeight = FontWeight.Bold)
                     survey?.let { survey ->
                         survey.options.forEach { totalVotes += it.numberOfVotes }
 
-                        PollScreen(
-                            totalVotes = totalVotes, options = survey.options,
-                            isVoted = pollDetailState.value.isVoted,
-                            isLoading = pollDetailState.value.isLoading,
-                            isOver = isOver,
-                            email = pollDetailState.value.email
-                        ) { optionId ->
-                            survey.id?.let { id ->
-                                viewModel.onVote(
-                                    options = survey.options,
-                                    optionId = optionId,
-                                    id = id,
-                                    surveyTitle = survey.title,
-                                    deadline = survey.deadline ?: Date()
-                                )
+                        Surface(
+                            elevation = 8.dp,
+                            modifier = Modifier
+                                .background(MaterialTheme.colors.background)
+                                .padding(vertical = 12.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .background(MaterialTheme.colors.background)
+                            ) {
+                                Text(text = "${survey?.title}", fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(8.dp))
+                                PollScreen(
+                                    totalVotes = totalVotes, options = survey.options,
+                                    isVoted = pollDetailState.value.isVoted,
+                                    isLoading = pollDetailState.value.isLoading,
+                                    isOver = isOver,
+                                    email = pollDetailState.value.email
+                                ) { optionId ->
+                                    survey.id?.let { id ->
+                                        viewModel.onVote(
+                                            options = survey.options,
+                                            optionId = optionId,
+                                            id = id,
+                                            surveyTitle = survey.title,
+                                            deadline = survey.deadline ?: Date()
+                                        )
+                                    }
+                                }
                             }
                         }
                     }

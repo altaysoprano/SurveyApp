@@ -167,8 +167,8 @@ class CreatePollViewModel @Inject constructor(
             val surveyTitle = _createPollState.value.data?.title
             val sendIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, "Do you want to vote in this survey?\n\n " +
-                        "QUESTION: $surveyTitle SURVEY CODE: $surveyCode \n\n" +
+                putExtra(Intent.EXTRA_TEXT, "QUESTION: $surveyTitle\n\n" +
+                        "Do you want to vote in this survey? SURVEY CODE: $surveyCode\n\n" +
                         "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID +"\n\n")
                 type = shareType
             }
