@@ -84,7 +84,8 @@ fun MainScreen(
                 isTextBlank = searchSurveyState.value.isTextBlank,
                 error = searchSurveyState.value.error
             )
-        }
+        },
+        backgroundColor = MaterialTheme.colors.surface
     )
     {
         Column(

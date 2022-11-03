@@ -105,6 +105,9 @@ dependencies {
     //Gson
     implementation 'com.google.code.gson:gson:2.8.5'
 
+    //Permissions
+    implementation "com.google.accompanist:accompanist-permissions:0.21.1-beta"
+
     //Wheel Picker
     implementation "com.chargemap.compose:numberpicker:1.0.3"
 

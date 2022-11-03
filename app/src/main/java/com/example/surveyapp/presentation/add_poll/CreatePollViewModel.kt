@@ -1,5 +1,7 @@
 package com.example.surveyapp.presentation.add_poll
 
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -7,15 +9,21 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.surveyapp.BuildConfig
 import com.example.surveyapp.common.Response
 import com.example.surveyapp.data.models.Option
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.data.repository.FirebaseRepository
 import com.example.surveyapp.domain.usecase.UseCases
+import com.example.surveyapp.presentation.poll_details.SnackbarEvent
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.util.*
@@ -30,6 +38,11 @@ class CreatePollViewModel @Inject constructor(
     val createPollState = _createPollState
 
     private lateinit var auth: FirebaseAuth
+
+    private var isPermissionsGranted = false
+
+    private val _snackBarFlow = MutableSharedFlow<SnackbarEvent>()
+    val snackbarFlow = _snackBarFlow.asSharedFlow()
 
     fun addSurvey(title: String, options: List<Option>) =
         viewModelScope.launch {
@@ -141,4 +154,45 @@ class CreatePollViewModel @Inject constructor(
         val deadline = calendar.time
         return deadline
     }
+
+    @ExperimentalPermissionsApi
+    suspend fun onShare(
+        context: Context, permissionsState: MultiplePermissionsState
+    ) {
+        updateOrCheckPermissions(permissionsState)
+
+        if (isPermissionsGranted) {
+            val shareType = "text/plain"
+            val surveyCode = _createPollState.value.data?.id
+            val surveyTitle = _createPollState.value.data?.title
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "Do you want to vote in this survey?\n\n " +
+                        "QUESTION: $surveyTitle SURVEY CODE: $surveyCode \n\n" +
+                        "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID +"\n\n")
+                type = shareType
+            }
+            val shareIntent = Intent.createChooser(sendIntent, "Share to: ")
+            context.startActivity(shareIntent)
+        }
+    }
+
+    @ExperimentalPermissionsApi
+    suspend fun updateOrCheckPermissions(permissionsState: MultiplePermissionsState) {
+        if (permissionsState.permissions.all {
+                it.hasPermission
+            }) {
+            isPermissionsGranted = true
+        }
+        permissionsState.permissions.forEach {
+            if (it.isPermanentlyDenied()) _snackBarFlow.emit(
+                SnackbarEvent.ShowPermanentlyDeniedSnackbar(
+                    "Some permissions permanently denied. You can " +
+                            "enable them in the app settings."
+                )
+            )
+        }
+        permissionsState.launchMultiplePermissionRequest()
+    }
+
 }

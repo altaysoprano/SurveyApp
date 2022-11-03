@@ -22,12 +22,14 @@ import com.example.surveyapp.presentation.login.LoginScreen
 import com.example.surveyapp.presentation.main.MainScreen
 import com.example.surveyapp.presentation.poll_details.PollDetailScreen
 import com.example.surveyapp.ui.theme.SurveyAppTheme
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalMaterialApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @ExperimentalPermissionsApi
     @RequiresApi(Build.VERSION_CODES.O)
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +42,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalPermissionsApi
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi

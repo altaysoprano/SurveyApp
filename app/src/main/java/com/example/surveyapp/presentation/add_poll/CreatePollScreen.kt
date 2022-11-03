@@ -1,5 +1,6 @@
 package com.example.surveyapp.presentation
 
+import android.Manifest
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -21,13 +22,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.surveyapp.R
 import com.example.surveyapp.presentation.add_poll.CreatePollViewModel
 import com.example.surveyapp.presentation.add_poll.components.*
 import com.example.surveyapp.presentation.main.components.OutlinedTextFieldBackground
+import com.example.surveyapp.presentation.poll_details.SnackbarEvent
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@ExperimentalPermissionsApi
 @ExperimentalFoundationApi
 @Composable
 fun CreatePollScreen(
@@ -37,6 +45,14 @@ fun CreatePollScreen(
 
     val createPollState = viewModel.createPollState
     val context = LocalContext.current
+    val scaffoldState = rememberScaffoldState()
+
+    val permissionsState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+    )
 
     LaunchedEffect(key1 = createPollState.value.isAdded) {
         if (createPollState.value.isAdded) {
@@ -52,10 +68,23 @@ fun CreatePollScreen(
         }
     }
 
+    LaunchedEffect(key1 = true) {
+        viewModel.snackbarFlow.collectLatest { event ->
+            when(event) {
+                is SnackbarEvent.ShowPermanentlyDeniedSnackbar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message
+                    )
+                }
+            }
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        backgroundColor = MaterialTheme.colors.background,
+        backgroundColor = MaterialTheme.colors.surface,
+        scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
                 backgroundColor = MaterialTheme.colors.background,
@@ -78,10 +107,15 @@ fun CreatePollScreen(
                 }
             )
         }
-        ) {
+    ) {
         CreatePollAlertDialog(
             createPollState.value.dialogState,
-            createPollState.value.data?.id ?: ""
+            createPollState.value.data?.id ?: "",
+            {
+                viewModel.viewModelScope.launch {
+                    viewModel.onShare(context = context, permissionsState = permissionsState)
+                }
+            }
         ) {
             viewModel.onAlertDialogDismiss()
         }

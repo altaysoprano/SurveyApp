@@ -1,5 +1,6 @@
 package com.example.surveyapp.presentation.poll_details
 
+import android.Manifest
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -20,20 +21,28 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.surveyapp.R
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.presentation.poll_details.components.SurveyStateCard
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+@ExperimentalPermissionsApi
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalFoundationApi
 @Composable
@@ -46,11 +55,24 @@ fun PollDetailScreen(
     val pollDetailState = viewModel.pollDetailState
     val scaffoldState = rememberScaffoldState()
     val context = LocalContext.current
+    var showMenu by remember { mutableStateOf(false) }
+
+    val permissionsState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+    )
 
     LaunchedEffect(key1 = true) {
         viewModel.snackbarFlow.collectLatest { event ->
             when (event) {
                 is SnackbarEvent.VotedSurveySnackbar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message
+                    )
+                }
+                is SnackbarEvent.ShowPermanentlyDeniedSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message
                     )
@@ -77,16 +99,52 @@ fun PollDetailScreen(
                 },
                 navigationIcon =
                 {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
+                    Box() {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    Box(contentAlignment = Center) {
+                        IconButton(onClick = { showMenu = !showMenu }) {
+                            Icon(
+                                painterResource(id = R.drawable.ic_baseline_more_vert_24),
+                                contentDescription = "Dropdown Menu Icon"
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = showMenu, onDismissRequest = { showMenu = false },
+                            modifier = Modifier
+                                .background(MaterialTheme.colors.background)
+                                .fillMaxWidth(0.4f)
+                        ) {
+                            DropdownMenuItem(onClick = {
+                                viewModel.viewModelScope.launch {
+                                    viewModel.onShare(context = context, permissionsState = permissionsState)
+                                }
+                            }) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text("Share", fontWeight = FontWeight.Bold)
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Icon(
+                                        painterResource(id = R.drawable.ic__share),
+                                        contentDescription = "Share"
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             )
-        },
-        ) {
+        }
+    ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Card(
                 elevation = 8.dp,

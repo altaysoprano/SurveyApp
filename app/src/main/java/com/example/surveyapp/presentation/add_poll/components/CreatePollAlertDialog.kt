@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.example.surveyapp.R
 
 @Composable
-fun CreatePollAlertDialog(dialogState: Boolean, code: String, onDismiss: () -> Unit) {
+fun CreatePollAlertDialog(dialogState: Boolean, code: String, onShare: () -> Unit, onDismiss: () -> Unit) {
 
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
 
@@ -27,7 +27,7 @@ fun CreatePollAlertDialog(dialogState: Boolean, code: String, onDismiss: () -> U
             onDismissRequest = { },
             backgroundColor = MaterialTheme.colors.background,
             text = {
-                Column(){
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -42,15 +42,17 @@ fun CreatePollAlertDialog(dialogState: Boolean, code: String, onDismiss: () -> U
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(4.dp),
+                            .padding(4.dp)
+                            .background(MaterialTheme.colors.surface),
                         horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
                             text = code, fontSize = 32.sp,
                             fontWeight = FontWeight.Bold, textAlign = TextAlign.Center,
-                            color = MaterialTheme.colors.background,
-                            modifier = Modifier.background(MaterialTheme.colors.onBackground).padding(4.dp)
+                            modifier = Modifier
+                                .background(MaterialTheme.colors.surface)
+                                .padding(horizontal = 4.dp, vertical = 8.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
@@ -59,6 +61,35 @@ fun CreatePollAlertDialog(dialogState: Boolean, code: String, onDismiss: () -> U
                             modifier = Modifier.clickable {
                                 clipboardManager.setText(AnnotatedString((code)))
                             }
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        "Do you want to share this survey with your friends?",
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    TextButton(
+                        onClick = { onShare() },
+                        modifier = Modifier
+                            .fillMaxWidth(0.75f),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.background),
+                        elevation = ButtonDefaults.elevation(
+                            defaultElevation = 10.dp,
+                            pressedElevation = 15.dp,
+                            disabledElevation = 0.dp
+                        )
+                    ) {
+                        Text(
+                            "SHARE",
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            color = MaterialTheme.colors.primary
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            painterResource(id = R.drawable.ic__share),
+                            contentDescription = "Share"
                         )
                     }
                 }
@@ -70,9 +101,17 @@ fun CreatePollAlertDialog(dialogState: Boolean, code: String, onDismiss: () -> U
                 ) {
                     TextButton(
                         onClick = { onDismiss() },
-                        border = BorderStroke(1.dp, color = MaterialTheme.colors.onPrimary),
+                        modifier = Modifier
+                            .padding(bottom = 12.dp)
+                            .fillMaxWidth(0.75f),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
+                        elevation = ButtonDefaults.elevation(
+                            defaultElevation = 10.dp,
+                            pressedElevation = 15.dp,
+                            disabledElevation = 0.dp
+                        )
                     ) {
-                        Text(text = "OK")
+                        Text(text = "OK", modifier = Modifier.padding(vertical = 4.dp))
                     }
                 }
             }
