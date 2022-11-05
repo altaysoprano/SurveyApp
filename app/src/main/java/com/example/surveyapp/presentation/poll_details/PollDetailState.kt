@@ -9,5 +9,6 @@ data class PollDetailState(
     val isLoading: Boolean = false,
     val loadingText: String = "",
     val email: Email? = null,
-    val surveys: List<Survey> = listOf()
+    val surveys: List<Survey> = listOf(),
+    val deleteDialogState: Boolean = false
 )

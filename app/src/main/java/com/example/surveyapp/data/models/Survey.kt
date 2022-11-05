@@ -10,6 +10,7 @@ import java.util.*
 data class Survey(
     var id: String? = null,
     val title: String = "",
+    val owner: String = "",
     val options: List<Option> = listOf(),
     @ServerTimestamp
     var surveyAddedTimestamp: Date? = null,

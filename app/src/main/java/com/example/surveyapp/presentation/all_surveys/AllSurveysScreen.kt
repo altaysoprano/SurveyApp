@@ -78,11 +78,9 @@ fun AllSurveysScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             AllSurveysCard(
                 isLoading = allSurveysState.value.isLoading,
-                title = "Surveys",
                 size = 1f,
                 surveyList = allSurveysState.value.data,
-                listSize = allSurveysState.value.data.size,
-                searchText = allSurveysState.value.text,
+                listSize = allSurveysState.value.data.size
             ) { id ->
                 allSurveysViewModel.getSurveyById(id)
             }
@@ -96,7 +94,7 @@ fun AllSurveysScreen(
                     CircularProgressIndicator()
                 }
             }
-
+            //AŞAĞIDAKİ IF'İ SİLEBİLİRSİN
             if (allSurveysState.value.isPaginating) {
                 Box(
                     contentAlignment = Alignment.BottomCenter,

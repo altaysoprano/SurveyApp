@@ -106,6 +106,7 @@ fun getSurveysFromFirestore() = callbackFlow {
             val survey = Survey(
                 id = id,
                 title = title,
+                owner = emailName,
                 options = options,
                 deadline = deadline
             )

@@ -13,9 +13,7 @@ import com.example.surveyapp.common.Response
 import com.example.surveyapp.data.models.Option
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.domain.usecase.UseCases
-import com.example.surveyapp.presentation.add_poll.isPermanentlyDenied
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -37,10 +35,9 @@ class PollDetailViewModel @Inject constructor(
     val pollDetailState = _pollDetailState
 
     private var auth: FirebaseAuth
+    private var emailName: String?
 
     private val survey = savedStateHandle.get<Survey>("survey")
-
-    private var isPermissionsGranted = false
 
     private val _snackBarFlow = MutableSharedFlow<SnackbarEvent>()
     val snackbarFlow = _snackBarFlow.asSharedFlow()
@@ -48,9 +45,11 @@ class PollDetailViewModel @Inject constructor(
     init {
         auth = Firebase.auth
         val currentUser = auth.currentUser
-        val emailName = currentUser?.email
+        emailName = currentUser?.email
 
-        val survey = savedStateHandle.get<Survey>("survey") //BURADAKİ ÜSTTEKİNİ Bİ DENE
+        Log.d("Mesaj: ", "emailName: $emailName")
+
+        val survey = savedStateHandle.get<Survey>("survey")
         val deadline = survey?.deadline
 
         checkIsSurveyOver(deadline ?: Date())
@@ -121,7 +120,6 @@ class PollDetailViewModel @Inject constructor(
                 }
             }
         } else {
-            Log.d("Mesaj: ", "Bu anketin süresi geçmiş")
             _snackBarFlow.emit(
                 SnackbarEvent.VotedSurveySnackbar(
                     message = "This survey has expired. You cannot vote."
@@ -132,11 +130,8 @@ class PollDetailViewModel @Inject constructor(
 
     @ExperimentalPermissionsApi
     suspend fun onShare(
-        context: Context, permissionsState: MultiplePermissionsState
+        context: Context
     ) {
-        updateOrCheckPermissions(permissionsState)
-
-        if (isPermissionsGranted) {
             val shareType = "text/plain"
             val surveyCode = survey?.id
             val surveyTitle = survey?.title
@@ -157,24 +152,17 @@ class PollDetailViewModel @Inject constructor(
             }
             val shareIntent = Intent.createChooser(sendIntent, "Share to: ")
             context.startActivity(shareIntent)
-        }
     }
 
-    @ExperimentalPermissionsApi
-    suspend fun updateOrCheckPermissions(permissionsState: MultiplePermissionsState) {
-        if (permissionsState.permissions.all {
-                it.hasPermission
-            }) {
-            isPermissionsGranted = true
-        }
-        permissionsState.permissions.forEach {
-            if (it.isPermanentlyDenied()) _snackBarFlow.emit(
-                SnackbarEvent.ShowPermanentlyDeniedSnackbar(
-                    "Some permissions permanently denied. You can " +
-                            "enable them in the app settings."
-                )
-            )
-        }
-        permissionsState.launchMultiplePermissionRequest()
+    fun onDeleteItemClick() {
+        _pollDetailState.value = _pollDetailState.value.copy(
+            deleteDialogState = true
+        )
+    }
+
+    fun onDeleteDialogDismiss() {
+        _pollDetailState.value = _pollDetailState.value.copy(
+            deleteDialogState = false
+        )
     }
 }

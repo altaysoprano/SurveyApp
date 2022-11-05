@@ -47,13 +47,6 @@ fun CreatePollScreen(
     val context = LocalContext.current
     val scaffoldState = rememberScaffoldState()
 
-    val permissionsState = rememberMultiplePermissionsState(
-        permissions = listOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-    )
-
     LaunchedEffect(key1 = createPollState.value.isAdded) {
         if (createPollState.value.isAdded) {
             navController.navigate(context.getString(R.string.main_screen)) {
@@ -65,18 +58,6 @@ fun CreatePollScreen(
                 }
             }
             viewModel.onPollAdded()
-        }
-    }
-
-    LaunchedEffect(key1 = true) {
-        viewModel.snackbarFlow.collectLatest { event ->
-            when(event) {
-                is SnackbarEvent.ShowPermanentlyDeniedSnackbar -> {
-                    scaffoldState.snackbarHostState.showSnackbar(
-                        message = event.message
-                    )
-                }
-            }
         }
     }
 
@@ -113,7 +94,7 @@ fun CreatePollScreen(
             createPollState.value.data?.id ?: "",
             {
                 viewModel.viewModelScope.launch {
-                    viewModel.onShare(context = context, permissionsState = permissionsState)
+                    viewModel.onShare(context = context)
                 }
             }
         ) {

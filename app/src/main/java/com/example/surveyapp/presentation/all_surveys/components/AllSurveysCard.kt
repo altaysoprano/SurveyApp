@@ -26,11 +26,9 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun AllSurveysCard(
     isLoading: Boolean,
-    title: String,
     size: Float,
     surveyList: List<Survey>,
     listSize: Int,
-    searchText: String,
     onItemClick: (String) -> Unit
 ) {
 

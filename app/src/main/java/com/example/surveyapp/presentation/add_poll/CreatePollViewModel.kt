@@ -39,11 +39,6 @@ class CreatePollViewModel @Inject constructor(
 
     private lateinit var auth: FirebaseAuth
 
-    private var isPermissionsGranted = false
-
-    private val _snackBarFlow = MutableSharedFlow<SnackbarEvent>()
-    val snackbarFlow = _snackBarFlow.asSharedFlow()
-
     fun addSurvey(title: String, options: List<Option>) =
         viewModelScope.launch {
             val isOwnVoteChecked = _createPollState.value.isCheckBoxChecked
@@ -156,12 +151,9 @@ class CreatePollViewModel @Inject constructor(
     }
 
     @ExperimentalPermissionsApi
-    suspend fun onShare(
-        context: Context, permissionsState: MultiplePermissionsState
+    fun onShare(
+        context: Context
     ) {
-        updateOrCheckPermissions(permissionsState)
-
-        if (isPermissionsGranted) {
             val shareType = "text/plain"
             val surveyCode = _createPollState.value.data?.id
             val surveyTitle = _createPollState.value.data?.title
@@ -174,25 +166,5 @@ class CreatePollViewModel @Inject constructor(
             }
             val shareIntent = Intent.createChooser(sendIntent, "Share to: ")
             context.startActivity(shareIntent)
-        }
     }
-
-    @ExperimentalPermissionsApi
-    suspend fun updateOrCheckPermissions(permissionsState: MultiplePermissionsState) {
-        if (permissionsState.permissions.all {
-                it.hasPermission
-            }) {
-            isPermissionsGranted = true
-        }
-        permissionsState.permissions.forEach {
-            if (it.isPermanentlyDenied()) _snackBarFlow.emit(
-                SnackbarEvent.ShowPermanentlyDeniedSnackbar(
-                    "Some permissions permanently denied. You can " +
-                            "enable them in the app settings."
-                )
-            )
-        }
-        permissionsState.launchMultiplePermissionRequest()
-    }
-
 }
