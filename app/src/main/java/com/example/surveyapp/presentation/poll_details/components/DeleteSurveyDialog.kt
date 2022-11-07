@@ -41,7 +41,10 @@ fun DeleteSurveyDialog(
             },
             confirmButton = {
                 TextButton(
-                    onClick = { onConfirm() },
+                    onClick = {
+                        onConfirm()
+                        onDismiss()
+                    },
                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error),
                     elevation = ButtonDefaults.elevation(
                         defaultElevation = 10.dp,

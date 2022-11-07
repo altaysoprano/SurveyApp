@@ -2,6 +2,7 @@ package com.example.surveyapp.presentation.poll_details
 
 import android.Manifest
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -56,6 +57,11 @@ fun PollDetailScreen(
                         message = event.message
                     )
                 }
+                is SnackbarEvent.CantVoteDeletedSurveySnackbar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message
+                    )
+                }
             }
         }
     }
@@ -97,7 +103,7 @@ fun PollDetailScreen(
                                 )
                             }
                         },
-                        isOwner = false
+                        isOwner = viewModel.emailName == survey?.owner
                     )
                 }
             )
@@ -105,7 +111,12 @@ fun PollDetailScreen(
     ) {
         DeleteSurveyDialog(deleteDialogState = pollDetailState.value.deleteDialogState,
             onDismiss = { viewModel.onDeleteDialogDismiss() },
-            onConfirm = {}
+            onConfirm = {
+                viewModel.deleteSurvey(id = survey?.id ?: "", email = viewModel.emailName ?: "")
+                navController.navigate(context.getString(R.string.main_screen)) {
+                    popUpTo(0)
+                }
+            }
         )
         Box(modifier = Modifier.fillMaxSize()) {
             Card(

@@ -20,7 +20,7 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -35,7 +35,7 @@ class PollDetailViewModel @Inject constructor(
     val pollDetailState = _pollDetailState
 
     private var auth: FirebaseAuth
-    private var emailName: String?
+    var emailName: String?
 
     private val survey = savedStateHandle.get<Survey>("survey")
 
@@ -46,8 +46,6 @@ class PollDetailViewModel @Inject constructor(
         auth = Firebase.auth
         val currentUser = auth.currentUser
         emailName = currentUser?.email
-
-        Log.d("Mesaj: ", "emailName: $emailName")
 
         val survey = savedStateHandle.get<Survey>("survey")
         val deadline = survey?.deadline
@@ -74,6 +72,28 @@ class PollDetailViewModel @Inject constructor(
                 is Response.Error -> {
                     _pollDetailState.value = _pollDetailState.value.copy(
                         isLoading = false //BURADA VE ONVOTE FONKSİYONUNDA BAŞARISIZLIK DURUMLARINDA BİR ŞEYLER YAPTIRABİLİRSİN
+                    )
+                }
+            }
+        }
+    }
+
+    fun deleteSurvey(id: String, email: String) = viewModelScope.launch {
+        useCases.deleteSurvey(id, email).collect { response ->
+            when(response) {
+                is Response.Loading -> {
+                    _pollDetailState.value = _pollDetailState.value.copy(
+                        isLoading = true
+                    )
+                }
+                is Response.Success -> {
+                    _pollDetailState.value = _pollDetailState.value.copy(
+                        isLoading = false
+                    )
+                }
+                is Response.Error -> {
+                    _pollDetailState.value = _pollDetailState.value.copy(
+                        isLoading = false
                     )
                 }
             }
@@ -115,6 +135,11 @@ class PollDetailViewModel @Inject constructor(
                     is Response.Error -> {
                         _pollDetailState.value = _pollDetailState.value.copy(
                             isLoading = false
+                        )
+                        _snackBarFlow.emit(
+                            SnackbarEvent.CantVoteDeletedSurveySnackbar(
+                                message = response.message
+                            )
                         )
                     }
                 }

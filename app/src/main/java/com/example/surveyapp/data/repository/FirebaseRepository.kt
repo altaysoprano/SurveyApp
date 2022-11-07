@@ -1,6 +1,7 @@
 package com.example.surveyapp.data.repository
 
 import android.content.ContentValues.TAG
+import android.content.res.Resources
 import android.util.Log
 import com.example.surveyapp.common.Constants.ADDED_DATE
 import com.example.surveyapp.common.Response
@@ -27,23 +28,6 @@ class FirebaseRepository(
     private val surveysRef: CollectionReference,
     private val usersRef: CollectionReference
 ) {
-
-    /*
-fun getSurveysFromFirestore() = callbackFlow {
-    val snapshotListener = surveysRef.orderBy(TITLE).addSnapshotListener { snapshot, e ->
-        val response = if (snapshot != null) {
-            val surveys = snapshot.toObjects(Survey::class.java)
-            Response.Success(surveys) //Burada try-send yapman gerekiyor olabilir
-        } else {
-            Error(e?.message ?: e.toString())
-        }
-        trySend(response).isSuccess
-    }
-    awaitClose {
-        snapshotListener.remove()
-    }
-}
-*/
 
     suspend fun getSurveys(email: String, collectionName: String) = callbackFlow {
         try {
@@ -144,8 +128,9 @@ fun getSurveysFromFirestore() = callbackFlow {
                 updatedOptions[optionId].numberOfVotes += 1
                 surveysRef.document(id).update(mapOf("options" to updatedOptions)).await()
                 emit(Response.Success(email))
-            } catch (e: Exception) {
-                emit(Response.Error(e.message ?: e.toString()))
+            }
+            catch (e: Exception) {
+                emit(Response.Error("An error occurred. Survey may have been deleted"))
             }
         }
 
@@ -179,7 +164,7 @@ fun getSurveysFromFirestore() = callbackFlow {
                         val survey = document.toObject(Survey::class.java)
                         trySend(Response.Success(survey))
                     } else {
-                        trySend(Response.Error("Survey not found"))
+                        trySend(Response.Error("Survey not found. It may have been deleted"))
                     }
                 }
                 .addOnFailureListener {
@@ -191,6 +176,65 @@ fun getSurveysFromFirestore() = callbackFlow {
 
         awaitClose { cancel() }
     }
+
+    fun deleteSurvey(id: String, email: String) = callbackFlow {
+        try {
+            trySend(Response.Loading)
+            usersRef.document(email).collection("ownedSurveys").document(id).delete()
+                .addOnSuccessListener {
+                    Log.d("Mesaj: ", "owned'tan silme başarılı")
+                    trySend(Response.Success(it))
+                }
+                .addOnFailureListener {
+                    Log.d("Mesaj: ", "owned'tan silme başarısız")
+                    trySend(Response.Error("Survey could not be deleted"))
+                }
+            usersRef.document(email).collection("votedSurveys").document(id).delete()
+                .addOnSuccessListener {
+                    Log.d("Mesaj: ", "voted'tan silme başarılı")
+                    trySend(Response.Success(it))
+                }
+                .addOnFailureListener {
+                    Log.d("Mesaj: ", "voted'tan silme başarısız")
+                    trySend(Response.Error("Survey could not be deleted"))
+                }
+            surveysRef.document(id).delete()
+                .addOnSuccessListener {
+                    trySend(Response.Success(it))
+                }
+                .addOnFailureListener {
+                    trySend(Response.Error("Survey could not be deleted"))
+                }
+        } catch (e: Exception) {
+            trySend(Response.Error(e.message.toString()))
+        }
+        awaitClose { cancel() }
+    }
+
+/*
+    suspend fun getSurveys(email: String, collectionName: String) = callbackFlow {
+        try {
+            trySend(Response.Loading)
+            usersRef.document(email).collection(collectionName).orderBy(ADDED_DATE, Query.Direction.DESCENDING).get()
+                .addOnSuccessListener { result ->
+                    val surveys = ArrayList<Survey>()
+                    for(document in result) {
+                        val survey = document.toObject(Survey::class.java)
+                        surveys.add(survey)
+                        Log.d(TAG, "${document.id} => ${document.data}")
+                    }
+                    trySend(Response.Success(surveys))
+                }
+                .addOnFailureListener {
+                    trySend(Response.Error("Surveys could not be retrieved"))
+                }
+        } catch (e: Exception) {
+            trySend(Response.Error(e.message ?: e.toString()))
+        }
+        awaitClose { cancel() }
+    }
+*/
+
 
     suspend fun loginWithCredential(authCredential: AuthCredential) =
         firebaseSocialLoginSourceProvider.loginWithCredential(authCredential)

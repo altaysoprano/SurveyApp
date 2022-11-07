@@ -56,7 +56,8 @@ object AppModule {
         getSurveyById = GetSurveyById(repo),
         voteSurvey = VoteSurvey(repo),
         getEmailById = GetEmailById(repo),
-        addUser = AddUser(repo)
+        addUser = AddUser(repo),
+        deleteSurvey = DeleteSurvey(repo)
     )
 
 

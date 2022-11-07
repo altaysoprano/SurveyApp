@@ -9,5 +9,6 @@ data class UseCases @Inject constructor(
     val getSurveyById: GetSurveyById,
     val voteSurvey: VoteSurvey,
     val getEmailById: GetEmailById,
-    val addUser: AddUser
+    val addUser: AddUser,
+    val deleteSurvey: DeleteSurvey
 )

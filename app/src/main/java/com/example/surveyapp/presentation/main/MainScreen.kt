@@ -28,8 +28,10 @@ import com.example.surveyapp.presentation.login.LoginViewModel
 import com.example.surveyapp.presentation.main.components.SearchSurveyTextfield
 import com.example.surveyapp.presentation.main.components.SurveyCard
 import com.example.surveyapp.presentation.main.components.SurveyListCard
+import com.example.surveyapp.presentation.poll_details.SnackbarEvent
 import com.example.surveyapp.ui.theme.Blue300
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun MainScreen(
@@ -41,6 +43,7 @@ fun MainScreen(
     val authState = loginViewModel.authenticationState
     val searchSurveyState = homeViewModel.searchSurveyState
     val surveyListState = homeViewModel.surveyListState
+    val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = authState.value.isSignedIn) {
         if (!authState.value.isSignedIn) {
@@ -64,6 +67,7 @@ fun MainScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
+        scaffoldState = scaffoldState,
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
