@@ -9,11 +9,14 @@ import com.example.surveyapp.common.Response
 import com.example.surveyapp.data.models.Survey
 import com.example.surveyapp.domain.usecase.UseCases
 import com.example.surveyapp.presentation.main.SearchSurveyState
+import com.example.surveyapp.presentation.poll_details.SnackbarEvent
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,6 +35,9 @@ class AllSurveysViewModel @Inject constructor(
     private var allSurveys: MutableList<Survey> = mutableListOf()
 
     private lateinit var auth: FirebaseAuth
+
+    private val _snackBarFlow = MutableSharedFlow<SnackbarEvent>()
+    val snackbarFlow = _snackBarFlow.asSharedFlow()
 
     private var collectionName = savedStateHandle.get<String>("collectionName")
 
@@ -100,6 +106,37 @@ class AllSurveysViewModel @Inject constructor(
                             error = response.message
                         )
                     }
+                }
+            }
+        }
+    }
+
+    fun getSurvey(id: String) = viewModelScope.launch {
+        useCases.getSurveyById(id.trim()).collect { response ->
+            when (response) {
+                is Response.Loading -> {
+                    _searchSurveyState.value = _searchSurveyState.value.copy(
+                        isLoading = true,
+                        data = null,
+                        error = "",
+                        isTextBlank = false
+                    )
+                }
+                is Response.Success -> {
+                    _searchSurveyState.value = _searchSurveyState.value.copy(
+                        isLoading = false,
+                        data = response.data
+                    )
+                }
+                is Response.Error -> {
+                    _searchSurveyState.value = _searchSurveyState.value.copy(
+                        isLoading = false,
+                    )
+                    _snackBarFlow.emit(
+                        SnackbarEvent.SurveyNotFoundSnackbar(
+                            message = response.message
+                        )
+                    )
                 }
             }
         }

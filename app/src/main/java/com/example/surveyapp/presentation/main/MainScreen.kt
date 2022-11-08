@@ -64,6 +64,18 @@ fun MainScreen(
         }
     }
 
+    LaunchedEffect(key1 = true) {
+        homeViewModel.snackbarFlow.collectLatest { event ->
+            when(event) {
+                is SnackbarEvent.SurveyNotFoundSnackbar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message
+                    )
+                }
+            }
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -108,7 +120,7 @@ fun MainScreen(
                         navController.navigate("${context.getString(R.string.all_surveys_screen)}/$OWNED_SURVEYS")
                     }
                 ) { id ->
-                    homeViewModel.getSurveyById(id)
+                    homeViewModel.getSurvey(id)
                 }
                 SurveyListCard(
                     isLoading = surveyListState.value.isVotedSurveysLoading,
@@ -119,7 +131,7 @@ fun MainScreen(
                         navController.navigate("${context.getString(R.string.all_surveys_screen)}/$VOTED_SURVEYS")
                     }
                 ) { id ->
-                    homeViewModel.getSurveyById(id)
+                    homeViewModel.getSurvey(id)
                 }
             }
         }

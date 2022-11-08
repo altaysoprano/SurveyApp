@@ -27,7 +27,9 @@ import com.example.surveyapp.presentation.all_surveys.components.SearchSurveyLis
 import com.example.surveyapp.presentation.main.HomeViewModel
 import com.example.surveyapp.presentation.main.components.SearchSurveyTextfield
 import com.example.surveyapp.presentation.main.components.SurveyListCard
+import com.example.surveyapp.presentation.poll_details.SnackbarEvent
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun AllSurveysScreen(
@@ -39,6 +41,7 @@ fun AllSurveysScreen(
     val allSurveysState = allSurveysViewModel.allSurveysState
     val searchSurveyState = allSurveysViewModel.searchSurveyState
     val context = LocalContext.current
+    val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = searchSurveyState.value.data) {
         var survey = searchSurveyState.value.data
@@ -49,8 +52,21 @@ fun AllSurveysScreen(
         }
     }
 
+    LaunchedEffect(key1 = true) {
+        allSurveysViewModel.snackbarFlow.collectLatest { event ->
+            when(event) {
+                is SnackbarEvent.SurveyNotFoundSnackbar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message
+                    )
+                }
+            }
+        }
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        scaffoldState = scaffoldState,
         backgroundColor = MaterialTheme.colors.surface,
         topBar = {
             TopAppBar(
@@ -82,7 +98,7 @@ fun AllSurveysScreen(
                 surveyList = allSurveysState.value.data,
                 listSize = allSurveysState.value.data.size
             ) { id ->
-                allSurveysViewModel.getSurveyById(id)
+                allSurveysViewModel.getSurvey(id)
             }
             if (searchSurveyState.value.isLoading) {
                 Box(

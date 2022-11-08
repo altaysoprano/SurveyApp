@@ -34,6 +34,9 @@ class HomeViewModel @Inject constructor(
     private val _surveyListState = mutableStateOf(SurveyListState())
     val surveyListState = _surveyListState
 
+    private val _snackBarFlow = MutableSharedFlow<SnackbarEvent>()
+    val snackbarFlow = _snackBarFlow.asSharedFlow()
+
     private var auth: FirebaseAuth = Firebase.auth
     val currentUser = auth.currentUser
     val emailName = currentUser?.email
@@ -142,6 +145,37 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getSurvey(id: String) = viewModelScope.launch {
+            useCases.getSurveyById(id.trim()).collect { response ->
+                when (response) {
+                    is Response.Loading -> {
+                        _searchSurveyState.value = _searchSurveyState.value.copy(
+                            isLoading = true,
+                            data = null,
+                            error = "",
+                            isTextBlank = false
+                        )
+                    }
+                    is Response.Success -> {
+                        _searchSurveyState.value = _searchSurveyState.value.copy(
+                            isLoading = false,
+                            data = response.data
+                        )
+                    }
+                    is Response.Error -> {
+                        _searchSurveyState.value = _searchSurveyState.value.copy(
+                            isLoading = false,
+                        )
+                        _snackBarFlow.emit(
+                            SnackbarEvent.SurveyNotFoundSnackbar(
+                                message = response.message
+                            )
+                        )
+                    }
+                }
+            }
     }
 
     fun onSearchSurvey(id: String) {
