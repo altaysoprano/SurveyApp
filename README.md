@@ -11,5 +11,5 @@ https://user-images.githubusercontent.com/37440249/231441503-e34ec9fa-8586-4783-
 
 ### Usage of the application:
 
-https://user-images.githubusercontent.com/37440249/231441430-bb848984-766e-4186-a5df-ea0b1c480043.mp4
+https://user-images.githubusercontent.com/37440249/231441430-bb848984-766e-4186-a5df-ea0b1c480043.mp4 
 
